@@ -52,14 +52,25 @@ function NullSidebarContent($sidebar, $content) {
     echo _NullSidebarContent($sidebar, $content);
 }
 
-function _NullSidebarContent($sidebar, $content) {
-    return NullStack(
-        array($content, $sidebar),
-        'div',
-        array('id' => 'main', 'class' => 'site-main sidebar-content')
+function _NullSidebarContent($sidebar, $content, $layout_class='threeup') {
+    $contentAttr = array(
+        'class' => 'post-group-content'
         );
-}
+    $outerContent = NullTag('div', $content, $contentAttr);
 
+    $attr = array(
+        'class' => $layout_class.' post-group withsidebar row'
+        );
+
+    $contentAndSidebar = NullStack(
+        array($sidebar, $outerContent),
+        'div',
+        $attr
+        );
+        
+    $mainAttr = array('id' => 'content', 'class' => 'home', 'role' => 'main');
+    return NullTag('main', $contentAndSidebar, $mainAttr);
+}
 
 
 ?>
