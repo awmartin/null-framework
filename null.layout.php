@@ -48,8 +48,8 @@ function _NullContentSidebar($content, $sidebar, $layout_class='threeup') {
     return NullTag('main', $contentAndSidebar, $mainAttr);
 }
 
-function NullSidebarContent($sidebar, $content) {
-    echo _NullSidebarContent($sidebar, $content);
+function NullSidebarContent($sidebar, $content, $layout_class="threeup") {
+    echo _NullSidebarContent($sidebar, $content, $layout_class);
 }
 
 function _NullSidebarContent($sidebar, $content, $layout_class='threeup') {
