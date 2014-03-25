@@ -45,4 +45,17 @@ function _NullGoogleAnalytics($account) {
     $ga = $ga.'</script>';
     return $ga;
 }
+
+function _NullSiteTags(){
+    $tags = get_tags();
+    $html = '<div class="tags section">';
+    foreach ( $tags as $tag ) {
+    	$tag_link = get_tag_link( $tag->term_id );
+			
+    	$html .= "<a href='{$tag_link}' title='{$tag->name} Tag' class='{$tag->slug}'>";
+    	$html .= "{$tag->name}</a> ";
+    }
+    $html .= '</div>';
+    return $html;
+}
 ?>

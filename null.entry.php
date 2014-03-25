@@ -58,4 +58,23 @@ function IndexEntry() {
         );
 }
 
+function NullVerticalPostStack() {
+    return _NullArticle(
+        _NullPostedOn(),
+        
+        _NullPostHeader(
+            _NullPostTitle()
+            ),
+        
+        _NullPostThumbnail('large'),
+
+        _NullExcerpt(),
+        
+        NullReadMoreLink(),
+        
+        _NullClear(),
+        array('class' => 'vertical')
+        );
+}
+
 ?>

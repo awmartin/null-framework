@@ -43,4 +43,33 @@ function _NullContentWithoutExcerpt($append="") {
     return NullTag('div', $section.$toAppend, array('id' => 'content-main', 'class' => 'row'));
 }
 
+function _NullFirstParagraph($asExcerpt=true) {
+    $excerpt = _NullExcerpt();
+    $first_paragraph = getTextBetweenTags($excerpt, 'p');
+
+    if (!$asExcerpt) {
+        return $first_paragraph;
+    }
+    
+    if (hasThumbnail()) {
+        $class = "excerpt";
+        }
+    else {
+        $class = "excerpt no-thumbnail";
+        }
+    
+    $attr = array('class' => $class);
+    return NullTag('div', NullTag('p', $first_paragraph), $attr);
+}
+
+function getTextBetweenTags($string, $tagname) {
+    $pattern = "/<$tagname\s?[^>]*?>([\w\W]*?)<\/$tagname>/";
+    preg_match($pattern, $string, $matches);
+    return $matches[1];
+}
+
+function _NullContentWithoutFirstParagraph() {
+    $content = _NullContent();
+    return str_replace(_NullFirstParagraph(false), "", $content);
+}
 ?>

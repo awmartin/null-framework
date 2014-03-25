@@ -142,11 +142,39 @@ function _NullArticle() {
     return renderArticle($args);
 }
 
+// function renderArticle($args) {
+//     $attr = array(
+//         'class' => implode(" ", get_post_class())
+//         );
+//     return NullStack($args, 'article', $attr);
+// }
+
 function renderArticle($args) {
     $attr = array(
         'class' => implode(" ", get_post_class())
         );
-    return NullStack($args, 'article', $attr);
+    
+    $contentArgs = array();
+    $attrArgs = array();
+    foreach ($args as $arg) {
+        if (is_array($arg)) {
+            $attrArgs[] = $arg;
+        } else {
+            $contentArgs[] = $arg;
+        }
+    }
+    
+    foreach ($attrArgs as $attrArg) {
+        foreach ($attrArg as $key => $value) {
+            if (array_key_exists('class', $attr)) {
+                $attr[$key] = $attr[$key]." ".$value;
+            } else {
+                $attr[$key] = $value;
+            }
+        }
+    }
+    
+    return NullStack($contentArgs, 'article', $attr);
 }
 
 function NullPostShortCategories() {
@@ -190,6 +218,10 @@ function is_post(){
 
 function sep(){
     return NullTag('span', ' | ', array('class' => 'sep'));
+}
+
+function NullReadMoreLink() {
+    return NullTag('p', NullLink('Read more...', get_permalink()), array('class' => 'read-more'));
 }
 
 ?>
