@@ -17,21 +17,12 @@ function NullFooterWrapper($subfooterContent="") {
     echo _NullFooterWrapper($subfooterContent);
 }
 
-function _NullFooterWrapper($subfooterContent="") {
-    $footerContent = NullTag('div', _NullWidgetArea('Footer'), array("class" => "row"));
-    
-    $footerContent = $footerContent.$subfooterContent;
-    
+function _NullFooterWrapper($footerContent="") {
     $footerAttr = array(
-        'id' => 'page-footer',
         'class' => 'container',
         'role' => 'contentinfo'
         );
-    $footer = NullTag('footer', $footerContent, $footerAttr);
-    
-    $footer = NullTag('div', $footer, array('id' => 'page-bottom'));
-    
-    return $footer;
+    return NullTag('footer', $footerWidgets.$footerContent, $footerAttr);
 }
 
 function NullSubFooter($content){
@@ -39,7 +30,7 @@ function NullSubFooter($content){
 }
 
 function _NullSubFooter($content){
-    return NullTag('div', $content, array('id' => 'site-footer', 'class' => 'row'));
+    return NullTag('div', $content, array('class' => 'footer-content row'));
 }
 
 ?>

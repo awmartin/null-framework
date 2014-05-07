@@ -19,7 +19,7 @@ function _NullContentOnly($content, $layout_class='threeup') {
         $outerContent,
         $attr
         );
-        
+
     $mainAttr = array('id' => 'content', 'class' => 'home', 'role' => 'main');
     return NullTag('main', $content, $mainAttr);
 }
@@ -43,7 +43,7 @@ function _NullContentSidebar($content, $sidebar, $layout_class='threeup') {
         'div',
         $attr
         );
-        
+
     $mainAttr = array('id' => 'content', 'class' => 'home', 'role' => 'main');
     return NullTag('main', $contentAndSidebar, $mainAttr);
 }
@@ -67,10 +67,19 @@ function _NullSidebarContent($sidebar, $content, $layout_class='threeup') {
         'div',
         $attr
         );
-        
-    $mainAttr = array('id' => 'content', 'class' => 'home', 'role' => 'main');
+
+    $mainAttr = array('id' => 'content', 'class' => 'content', 'role' => 'main');
     return NullTag('main', $contentAndSidebar, $mainAttr);
 }
 
+function NullOnePage($menu, $panel, $content) {
+    $contentAttr = array(
+        'class' => 'post-group-content'
+        );
+    $outerContent = NullTag('div', $content, $contentAttr);
+    
+    $mainAttr = array('id' => 'content', 'class' => 'content', 'role' => 'main');
+    return NullTag('main', $menu.$panel.$outerContent, $mainAttr);
+}
 
 ?>

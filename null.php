@@ -19,5 +19,6 @@ require( get_template_directory() . '/null/null.site.php' );
 require( get_template_directory() . '/null/null.search.php' );
 require( get_template_directory() . '/null/null.entry.php' );
 require( get_template_directory() . '/null/null.extras.php' );
+require( get_template_directory() . '/null/null.panel.php' );
 
 ?>

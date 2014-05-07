@@ -7,7 +7,7 @@ function NullPostThumbnail($size='medium') {
     echo _NullPostThumbnail($size);
 }
 
-function _NullPostThumbnail($size='medium') {
+function _NullPostThumbnail($size='medium', $placeholder=false) {
     if (hasThumbnail()) {
         $permalink = get_permalink();
         $thumbnail = get_the_post_thumbnail(get_the_ID(), $size);
@@ -17,8 +17,14 @@ function _NullPostThumbnail($size='medium') {
         $attr = array('class' => 'thumbnail');
         return NullTag('div', $content, $attr);
     } else {
-        // $content = "";
-        return "";
+        if ($placeholder) {
+            $attr = array('class' => 'thumbnail');
+            return NullTag('div', '', $attr);
+        } else {
+            $attr = array('class' => 'empty-thumbnail');
+            return NullTag('div', '<!--no thumbnail here-->', $attr);
+        }
+        
     }
 }
 ?>

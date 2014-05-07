@@ -15,9 +15,12 @@ function NullFeaturedEntry() {
         );
 }
 
+/*
+    |  IMAGE  |  Title...  |  Excerpt...........  |
+*/
 function NullEntryImageTitleExcerpt() {
     return _NullArticle(
-        _NullPostThumbnail(),
+        _NullPostThumbnail('medium', true),
 
         _NullPostHeader(
             _NullPostTitle(),
@@ -36,7 +39,7 @@ function NullEntryTitleImageExcerpt() {
             _NullPostedOn()   // entry-meta
             ),
 
-        _NullPostThumbnail(), // entry-image
+        _NullPostThumbnail('medium', true), // entry-image
 
         _NullContent(),       // entry-content
         _NullClear()

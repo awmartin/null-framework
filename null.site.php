@@ -32,7 +32,7 @@ function NullGoogleAnalytics($account) {
 }
 
 function _NullGoogleAnalytics($account) {
-	$ga = '<script type="text/javascript" src="'.get_site_url().'/wp-includes/js/jquery/jquery.js"></script>';
+	$ga = '';
     $ga = $ga.'<script type="text/javascript">';
     $ga = $ga.'var _gaq = _gaq || [];';
     $ga = $ga."_gaq.push(['_setAccount', '".$account."']);";

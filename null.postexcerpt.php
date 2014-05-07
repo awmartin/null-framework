@@ -40,7 +40,7 @@ function _NullContentWithoutExcerpt($append="") {
     $more = $original_more;
 
     $toAppend = NullTag('div', $append);
-    return NullTag('div', $section.$toAppend, array('id' => 'content-main', 'class' => 'row'));
+    return NullTag('div', $section.$toAppend, array('class' => 'content-body row'));
 }
 
 function _NullFirstParagraph($asExcerpt=true) {

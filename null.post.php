@@ -32,7 +32,7 @@ function _NullContent($more=false) {
         );
     $section = NullStack($content, 'section', array('class' => 'post-content clearfix'));
 
-    return NullTag('div', $section, array('id' => 'content-main', 'class' => 'row'));
+    return NullTag('div', $section, array('class' => 'content-body row'));
 }
 
 

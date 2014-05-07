@@ -1,6 +1,6 @@
 <?php 
 function NullBreadcrumb() {
-    $tr = '<ul id="breadcrumb">';
+    $tr = '<ul class="breadcrumb">';
     
     $category_list = trim(get_the_category_list( ', ' ));
     if ($category_list != "") {
