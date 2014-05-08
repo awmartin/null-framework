@@ -15,9 +15,11 @@ function NullPostThumbnailPanel() {
     $panel = '';
     if (hasThumbnail()){
         $post_thumbnail_id = get_post_thumbnail_id( $post_id );
+        
         // https://codex.wordpress.org/Function_Reference/wp_get_attachment_image_src
-        $thumbnail_attr = wp_get_attachment_image_src( $post_thumbnail_id, 'full' );
+        $thumbnail_attr = wp_get_attachment_image_src( $post_thumbnail_id, 'large' );
         $url = $thumbnail_attr[0];
+        
         $content = NullTag('div',
             '',
             array('class' => 'bg')).

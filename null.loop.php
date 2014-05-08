@@ -50,7 +50,7 @@ function _NullPagination() {
     return NullTag(
         'div',
         NullClear().$pagination,
-        array('class' => 'row')
+        array('class' => 'pagination row')
     );
 }
 
