@@ -23,8 +23,10 @@ function NullEntryImageTitleExcerpt() {
         _NullPostThumbnail('medium', true),
 
         _NullPostHeader(
+            NullPostCategories(true),
             _NullPostTitle(),
-            _NullPostedOn()
+            _NullPostedOn(),
+            NullPostTags(true)
             ),
 
         _NullFirstParagraph(),

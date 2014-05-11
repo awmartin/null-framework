@@ -6,8 +6,8 @@ function NullSearchTitle() {
 
 function _NullSearchTitle() {
     $title = sprintf( 
-        __( 'Search Results for: %s', 'plinth' ),
-        '<span>' . get_search_query() . '</span>'
+        __( 'Search for: %s', 'plinth' ),
+        '<span class="query">' . get_search_query() . '</span>'
         );
     $attr = array('class' => 'page-title');
     return NullTag('h1', $title, $attr);

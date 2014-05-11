@@ -30,11 +30,36 @@ function _NullContent($more=false) {
     $content = array(
         NullPostContent($more)
         );
-    $section = NullStack($content, 'section', array('class' => 'post-content clearfix'));
+    $section = NullStack(
+        $content, 
+        'section', 
+        array('class' => 'post-content clearfix')
+        );
+    return $section;
 
-    return NullTag('div', $section, array('class' => 'content-body row'));
+    // return NullTag('div', $section, array('class' => 'content-body row'));
 }
 
+// Temporary solution to the content-sidebar, sidebar-content layout problem.
+function NullContentBody($more=false, $widgetArea='Post Sidebar'){
+    $content = _NullContent($more);
+    $sidebar = NullPostSidebar($widgetArea);
+    
+    return NullTag(
+        'div',
+        $content.$sidebar,
+        array('class' => 'content-body row')
+        );
+}
+
+function NullPostSidebar($widgetArea='Post Sidebar') {
+    $sidebar = _NullWidgetArea($widgetArea);
+    return NullTag(
+        'aside',
+        $sidebar,
+        array('class' => 'post-sidebar')
+    );
+}
 
 function NullPostContent($more=false) {
     if ($more) {
@@ -142,13 +167,6 @@ function _NullArticle() {
     return renderArticle($args);
 }
 
-// function renderArticle($args) {
-//     $attr = array(
-//         'class' => implode(" ", get_post_class())
-//         );
-//     return NullStack($args, 'article', $attr);
-// }
-
 function renderArticle($args) {
     $attr = array(
         'class' => implode(" ", get_post_class())
@@ -177,40 +195,7 @@ function renderArticle($args) {
     return NullStack($contentArgs, 'article', $attr);
 }
 
-function NullPostShortCategories() {
-    echo _NullPostCategories();
-}
 
-function _NullPostShortCategories() {
-	/* translators: used between list items, there is a space after the comma */
-	$categories_list = get_the_category_list( __( ', ', 'plinth' ) );
-	if ( $categories_list && plinth_categorized_blog() ) {
-        $categories = sprintf( __( 'Posted in %1$s', 'plinth' ), $categories_list );
-        $attr = array('class' => 'cat-links');
-        return NullTag('span', $categories, $attr);
-    }
-    return "";
-}
-
-function NullPostShortTags(){
-    echo _NullPostTags();
-}
-
-function _NullPostShortTags(){
-    $tr = "";
-    
-	/* translators: used between list items, there is a space after the comma */
-	$tags_list = get_the_tag_list( '', __( ', ', 'plinth' ) );
-	if ( $tags_list ) {
-        $separator = sep();
-        $tr = $tr.$separator;
-        $tagLinks = sprintf( __( 'Tagged %1$s', 'plinth' ), $tags_list );
-        $tags = NullTag('span', $tagLinks, array('class' => 'tag=links'));
-        $tr = $tr.$tags;
-        }
-    
-    return $tr;
-}
 
 function is_post(){
     return 'post' == get_post_type();
