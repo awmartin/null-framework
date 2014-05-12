@@ -1,13 +1,10 @@
 <?php
 
-function NullPrimary($contentTemplate) {
-    echo _NullPrimary($contentTemplate);
-}
 
-function _NullPrimary($contentTemplate){
+function NullPrimary($contentTemplate){
     $primaryContent = NullTag(
         'main',
-        _NullLoop($contentTemplate),
+        NullLoop($contentTemplate),
         array('id' => 'content-primary')
         );
 
@@ -19,7 +16,7 @@ function _NullPrimary($contentTemplate){
 function NullMain($template) {
     return NullTag(
         'main',
-        _NullLoop($template),
+        NullLoop($template),
         array('class' => 'main')
         );
 }

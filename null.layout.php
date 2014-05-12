@@ -1,10 +1,6 @@
 <?php
 
 function NullContentOnly($content, $layout_class='threeup') {
-    echo _NullContentOnly($content, $layout_class);
-}
-
-function _NullContentOnly($content, $layout_class='threeup') {
     $contentAttr = array(
         'class' => 'post-group-content'
         );
@@ -24,11 +20,8 @@ function _NullContentOnly($content, $layout_class='threeup') {
     return NullTag('main', $content, $mainAttr);
 }
 
-function NullContentSidebar($content, $sidebar, $layout_class='threeup') {
-    echo _NullContentSidebar($content, $sidebar, $layout_class);
-}
 
-function _NullContentSidebar($content, $sidebar, $layout_class='threeup') {
+function NullContentSidebar($content, $sidebar, $layout_class='threeup') {
     $contentAttr = array(
         'class' => 'post-group-content'
         );
@@ -48,11 +41,7 @@ function _NullContentSidebar($content, $sidebar, $layout_class='threeup') {
     return NullTag('main', $contentAndSidebar, $mainAttr);
 }
 
-function NullSidebarContent($sidebar, $content, $layout_class="threeup") {
-    echo _NullSidebarContent($sidebar, $content, $layout_class);
-}
-
-function _NullSidebarContent($sidebar, $content, $layout_class='threeup') {
+function NullSidebarContent($sidebar, $content, $layout_class='threeup') {
     $contentAttr = array(
         'class' => 'post-group-content'
         );

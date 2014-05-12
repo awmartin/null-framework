@@ -1,11 +1,8 @@
 <?php
-function NullLoop($contentFunction, $noResultsTemplate='archive') {
-    echo _NullLoop($contentFunction);
-}
 
 // Passing in a function as an argument.
 // http://stackoverflow.com/questions/627775/php-pass-function-as-param-then-call-the-function
-function _NullLoop($contentFunction, $noResultsTemplate='archive') {
+function NullLoop($contentFunction, $noResultsTemplate='archive') {
     ob_start();
     
     if (have_posts()):
@@ -37,11 +34,8 @@ function NullComments() {
     return $comments;
 }
 
-function NullPagination() {
-    echo _NullPagination();
-}
 
-function _NullPagination() {
+function NullPagination() {
     ob_start();
     plinth_content_nav( 'nav-below' );
     $pagination = ob_get_contents();
@@ -78,9 +72,9 @@ function NullIsFirstPage(){
 
 function NullFeature(){
     NullQuery(1, array('features'));
-    echo NullTag(
+    return NullTag(
         'div',
-        _NullLoop('NullFeaturedEntry', 'empty')."<hr>",
+        NullLoop('NullFeaturedEntry', 'empty')."<hr>",
         array('class' => 'row featured')
         );
 }

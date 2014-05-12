@@ -1,9 +1,7 @@
 <?php
-function NullExcerpt() {
-    echo _NullExcerpt();
-    }
 
-function _NullExcerpt($attr=null) {
+
+function NullExcerpt($attr=null) {
 
     global $more;
     $original_more = $more;
@@ -26,7 +24,7 @@ function _NullExcerpt($attr=null) {
     return NullTag('div', $excerpt, $attr);
 }
 
-function _NullContentWithoutExcerpt($append="") {
+function NullContentWithoutExcerpt($append="") {
     global $more;
     $original_more = $more;
     $more = 1;
@@ -43,8 +41,8 @@ function _NullContentWithoutExcerpt($append="") {
     return NullTag('div', $section.$toAppend, array('class' => 'content-body row'));
 }
 
-function _NullFirstParagraph($asExcerpt=true) {
-    $excerpt = _NullExcerpt();
+function NullFirstParagraph($asExcerpt=true) {
+    $excerpt = NullExcerpt();
     $first_paragraph = getTextBetweenTags($excerpt, 'p');
 
     if (!$asExcerpt) {
@@ -68,8 +66,8 @@ function getTextBetweenTags($string, $tagname) {
     return $matches[1];
 }
 
-function _NullContentWithoutFirstParagraph() {
-    $content = _NullContent();
-    return str_replace(_NullFirstParagraph(false), "", $content);
+function NullContentWithoutFirstParagraph() {
+    $content = NullContent();
+    return str_replace(NullFirstParagraph(false), "", $content);
 }
 ?>

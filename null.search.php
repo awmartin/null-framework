@@ -1,10 +1,6 @@
 <?php
 
 function NullSearchTitle() {
-    echo _NullSearchTitle();
-}
-
-function _NullSearchTitle() {
     $title = sprintf( 
         __( 'Search for: %s', 'plinth' ),
         '<span class="query">' . get_search_query() . '</span>'
@@ -13,9 +9,9 @@ function _NullSearchTitle() {
     return NullTag('h1', $title, $attr);
 }
 
-function _NullSearchHeader() {
+function NullSearchHeader() {
     $attr = array('class' => 'page-header');
-    return NullTag('header', _NullSearchTitle(), $attr);
+    return NullTag('header', NullSearchTitle(), $attr);
 }
 
 ?>

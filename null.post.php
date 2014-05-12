@@ -1,20 +1,21 @@
 <?php
+
 // Notes: How to extract function arguments.
 // func_num_args(), func_get_arg(), and func_get_args()
-
-function _NullPostHeader() {
-    return renderHeader(func_get_args());
-    }
-
 function NullPostHeader() {
-    echo renderHeader(func_get_args());
+    $args = func_get_args();
+    $content = "";
+    foreach ($args as $arg) {
+        $content = $content.$arg;
+    }
+    return NullTag(
+        'header',
+        $content,
+        array('class' => 'post-header')
+        );
     }
 
-function renderHeader($args) {
-    return NullStack($args, 'header', array('class' => 'post-header'));
-    }
-
-function NullStack($args, $tag, $attr) {
+function NullStack($args, $tag='div', $attr=array()) {
     $tr = "";
     foreach ($args as $arg) {
         $tr = $tr.$arg;
@@ -22,38 +23,34 @@ function NullStack($args, $tag, $attr) {
     return NullTag($tag, $tr, $attr);
     }
 
+// Returns a <section> tag holding the content of the current post or page.
 function NullContent($more=false) {
-    echo _NullContent($more);
-    }
-    
-function _NullContent($more=false) {
-    $content = array(
-        NullPostContent($more)
-        );
-    $section = NullStack(
-        $content, 
-        'section', 
+    return NullTag(
+        'section',
+        NullPostContent($more),
         array('class' => 'post-content clearfix')
         );
-    return $section;
-
-    // return NullTag('div', $section, array('class' => 'content-body row'));
 }
 
 // Temporary solution to the content-sidebar, sidebar-content layout problem.
-function NullContentBody($more=false, $widgetArea='Post Sidebar'){
-    $content = _NullContent($more);
+function NullContentBody($more=false, $widgetArea='Post Sidebar', $reverse=false){
+    $content = NullContent($more);
     $sidebar = NullPostSidebar($widgetArea);
+    
+    $tr = $content.$sidebar;
+    if ($reverse){
+        $tr = $sidebar.$content;
+    }
     
     return NullTag(
         'div',
-        $content.$sidebar,
+        $tr,
         array('class' => 'content-body row')
         );
 }
 
 function NullPostSidebar($widgetArea='Post Sidebar') {
-    $sidebar = _NullWidgetArea($widgetArea);
+    $sidebar = NullWidgetArea($widgetArea);
     return NullTag(
         'aside',
         $sidebar,
@@ -86,11 +83,8 @@ function NullPostPagination() {
     return wp_link_pages($attr);
     }
 
-function NullPostFooter(){
-    echo _NullPostFooter();
-}
 
-function _NullPostFooter() {
+function NullPostFooter() {
 	/* translators: used between list items, there is a space after the comma */
 	$category_list = get_the_category_list( __( ', ', 'plinth' ) );
 
@@ -123,18 +117,15 @@ function _NullPostFooter() {
 		the_title_attribute( 'echo=0' )
 	    );
     
-    $edit_link = _NullEditPostLink();
+    $edit_link = NullEditPostLink();
     $content = $content.$edit_link;
     
     $attr = array('class' => 'entry-meta');
     return NullTag('footer', $content, $attr);
 }
 
-function NullEditPostLink(){
-    echo _NullEditPostLink();
-}
 
-function _NullEditPostLink() {
+function NullEditPostLink() {
     return return_edit_post_link(
             __( 'Edit', 'plinth' ),
             '<span class="edit-link">',
@@ -159,15 +150,7 @@ function return_edit_post_link( $link = null, $before = '', $after = '', $id = 0
 
 function NullArticle() {
     $args = func_get_args();
-    echo renderArticle($args);
-}
-
-function _NullArticle() {
-    $args = func_get_args();
-    return renderArticle($args);
-}
-
-function renderArticle($args) {
+    
     $attr = array(
         'class' => implode(" ", get_post_class())
         );

@@ -1,17 +1,17 @@
 <?php
 
 function NullFeaturedEntry() {
-    return _NullArticle(
-        _NullPostThumbnail('full'),
+    return NullArticle(
+        NullPostThumbnail('full'),
 
-        _NullExcerpt(),
+        NullExcerpt(),
 
-        _NullPostHeader(
-            _NullPostTitle(),
-            _NullPostedOn()
+        NullPostHeader(
+            NullPostTitle(),
+            NullPostedOn()
             ),
 
-        _NullClear()
+        NullClear()
         );
 }
 
@@ -19,65 +19,65 @@ function NullFeaturedEntry() {
     |  IMAGE  |  Title...  |  Excerpt...........  |
 */
 function NullEntryImageTitleExcerpt() {
-    return _NullArticle(
-        _NullPostThumbnail('medium', true),
+    return NullArticle(
+        NullPostThumbnail('medium', true),
 
-        _NullPostHeader(
+        NullPostHeader(
             NullPostCategories(true),
-            _NullPostTitle(),
-            _NullPostedOn(),
+            NullPostTitle(),
+            NullPostedOn(),
             NullPostTags(true)
             ),
 
-        _NullFirstParagraph(),
-        _NullClear()
+        NullFirstParagraph(),
+        NullClear()
         );
     }
 
 function NullEntryTitleImageExcerpt() {
-    return _NullArticle(
-        _NullPostHeader(
-            _NullPostTitle(), // entry-title
-            _NullPostedOn()   // entry-meta
+    return NullArticle(
+        NullPostHeader(
+            NullPostTitle(), // entry-title
+            NullPostedOn()   // entry-meta
             ),
 
-        _NullPostThumbnail('medium', true), // entry-image
+        NullPostThumbnail('medium', true), // entry-image
 
-        _NullContent(),       // entry-content
-        _NullClear()
+        NullContent(),       // entry-content
+        NullClear()
         );
 }
 
 
 function IndexEntry() {
-    return _NullArticle(
-        _NullPostThumbnail(),
+    return NullArticle(
+        NullPostThumbnail(),
 
-        _NullPostHeader(
-            _NullPostTitle(),
-            _NullPostedOn()
+        NullPostHeader(
+            NullPostTitle(),
+            NullPostedOn()
             ),
 
-        _NullExcerpt(),
-        _NullClear()
+        NullExcerpt(),
+        NullClear()
         );
 }
 
 function NullVerticalPostStack() {
-    return _NullArticle(
-        _NullPostedOn(),
+    return NullArticle(
+        NullPostedOn(),
 
-        _NullPostHeader(
-            _NullPostTitle()
+        NullPostHeader(
+            NullPostTitle()
             ),
 
-        _NullPostThumbnail('large'),
+        NullPostThumbnail('large'),
 
-        _NullExcerpt(),
+        NullExcerpt(),
 
         NullReadMoreLink(),
 
-        _NullClear(),
+        NullClear(),
         array('class' => 'vertical')
         );
 }

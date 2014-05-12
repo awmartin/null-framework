@@ -3,11 +3,8 @@ function hasThumbnail() {
     return function_exists('has_post_thumbnail') && has_post_thumbnail();
 }
 
-function NullPostThumbnail($size='medium') {
-    echo _NullPostThumbnail($size);
-}
 
-function _NullPostThumbnail($size='medium', $placeholder=false) {
+function NullPostThumbnail($size='medium', $placeholder=false) {
     if (hasThumbnail()) {
         $permalink = get_permalink();
         $thumbnail = get_the_post_thumbnail(get_the_ID(), $size);

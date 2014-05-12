@@ -1,5 +1,5 @@
 <?php
-function _NullPostTitle() {
+function NullPostTitle() {
     $title = get_the_title();
     $permalink = get_permalink();
     $linkTitleAttr = esc_attr(
@@ -20,7 +20,4 @@ function _NullPostTitle() {
     return $headerTitle;
 }
 
-function NullPostTitle() {
-    echo _NullPostTitle();
-    }
 ?>

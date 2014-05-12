@@ -26,10 +26,6 @@ function NullClear(){
     return NullTag('div', "", array('class' => 'clear'));
 }
 
-function _NullClear(){
-    return NullTag('div', "", array('class' => 'clear'));
-}
-
 function NullHeaderClear(){
     return NullTag('div', "", array('class' => 'header-clear'));
 }

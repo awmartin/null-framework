@@ -1,10 +1,6 @@
 <?php
-    
-function NullSiteTitle(){
-    echo _NullSiteTitle();
-}
 
-function _NullSiteTitle($wrap=true) {
+function NullSiteTitle($wrap=true) {
     $siteTitle = get_bloginfo('name');
     $linkTitle = esc_attr( get_bloginfo( 'name', 'display' ) );
     $siteUrl = esc_url( home_url( '/' ) );
@@ -20,18 +16,10 @@ function _NullSiteTitle($wrap=true) {
 }
 
 function NullSiteDescription() {
-    echo _NullSiteDescription();
-}
-
-function _NullSiteDescription() {
     return NullTag('h2', get_bloginfo('description'), array('id' => 'site-description'));
 }
 
 function NullGoogleAnalytics($account) {
-    echo _NullGoogleAnalytics($account);
-}
-
-function _NullGoogleAnalytics($account) {
 	$ga = '';
     $ga = $ga.'<script type="text/javascript">';
     $ga = $ga.'var _gaq = _gaq || [];';
@@ -46,7 +34,7 @@ function _NullGoogleAnalytics($account) {
     return $ga;
 }
 
-function _NullSiteTags(){
+function NullSiteTags(){
     $tags = get_tags();
     $html = '<div class="tags section">';
     foreach ( $tags as $tag ) {

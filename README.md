@@ -7,25 +7,25 @@ is a sample `single.php` page:
     NullHeader();
 
     function SingleContent() {
-        return _NullArticle(
-            _NullPostHeader(
-                _NullPostTitle()
+        return NullArticle(
+            NullPostHeader(
+                NullPostTitle()
                 .NullBreadcrumb()
                 ),
                 
-            _NullExcerpt(),
+            NullExcerpt(),
             
-            _NullPostThumbnail('full'),
+            NullPostThumbnail('full'),
 
             NullHeaderClear(),
 
-            _NullContentWithoutExcerpt(
-                _NullPostedOn()
-                ._NullClear()
+            NullContentWithoutExcerpt(
+                NullPostedOn()
+                .NullClear()
                 .NullComments()
             ),
         
-            _NullSidebar()
+            NullSidebar()
         );
     }
 

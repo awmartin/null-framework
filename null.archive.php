@@ -1,10 +1,10 @@
 <?php
 
-function _NullArchiveHeader() {
+function NullArchiveHeader() {
     return NullStack( array(
-            NullTag('h1', _NullArchiveTitle(), array('class' => 'page-title')),
-            _NullCategoryDescription(),
-            _NullTagDescription()
+            NullTag('h1', NullArchiveTitle(), array('class' => 'page-title')),
+            NullCategoryDescription(),
+            NullTagDescription()
             ),
         'header',
         array('class' => 'page-header')
@@ -12,10 +12,6 @@ function _NullArchiveHeader() {
 }
 
 function NullArchiveTitle(){
-    echo _NullArchiveTitle();
-}
-
-function _NullArchiveTitle(){
 
 	if ( is_category() ) :
 		return sprintf( __( '%s', 'plinth' ), '<span>' . single_cat_title( '', false ) . '</span>' );
@@ -69,10 +65,6 @@ function _NullArchiveTitle(){
 }
 
 function NullCategoryDescription() {
-    echo _NullCategoryDescription();
-}
-
-function _NullCategoryDescription() {
     if ( is_category() ) :
     	// show an optional category description
     	$category_description = category_description();
@@ -83,11 +75,8 @@ function _NullCategoryDescription() {
     endif;
 }
 
-function NullTagDescription() {
-    echo _NullTagDescription();
-}
 
-function _NullTagDescription() {
+function NullTagDescription() {
     if ( is_tag() ) :
 		// show an optional tag description
 		$tag_description = tag_description();

@@ -1,6 +1,6 @@
 <?php
 
-function _NullSocial($socialArray) {
+function NullSocial($socialArray) {
     $socialLinks = "";
     foreach ($socialArray as $socialKey => $linkInfo){
         $url = NullGetSocialUrl($socialKey, $linkInfo);
