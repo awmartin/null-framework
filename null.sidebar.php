@@ -3,6 +3,7 @@
 // Returns an <aside> tag containing the main navigation.
 function NullSidebar($attr=array()){
     $klass = '';
+    $id = 'main-sidebar';
     $prepend = '';
     $append = '';
     $widgetArea = 'Navigation';
@@ -19,9 +20,13 @@ function NullSidebar($attr=array()){
     if (array_key_exists('widgetArea', $attr)) {
         $widgetArea = $attr['widgetArea'];
     }
+    if (array_key_exists('id', $attr)) {
+        $id = $attr['id'];
+    }
     
     $sidebarContent = NullWidgetArea($widgetArea);
     $sidebarAttr = array(
+        'id' => $id,
         'class' => 'sidebar widget-area '.$klass,
         'role' => 'complementary'
         );
