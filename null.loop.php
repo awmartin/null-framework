@@ -48,21 +48,20 @@ function NullPagination() {
     );
 }
 
-function NullQuery($posts_per_page=10, $categories=array()) {
+function NullQuery($posts_per_page=10, $categories=array(), $tags=array()) {
     global $wp_query;
     
-    $category_ids = array();
-    foreach ($categories as $category) {
-        $category_ids[] = get_cat_ID($category);
-        }
-    
-    $cat = implode(',', $category_ids);
+    $cat = implode(',', $categories);
+    $tag = implode(',', $tags);
     
     $paged = ( get_query_var( 'paged' ) ) ? get_query_var( 'paged' ) : 1;
 
-    $wp_query = new WP_Query(
-        array( 'posts_per_page' => $posts_per_page, 'cat' => $cat, 'paged' => $paged )
-        );
+    $wp_query = new WP_Query( array(
+        'posts_per_page' => $posts_per_page,
+        'category_name' => $cat,
+        'tag' => $tag,
+        'paged' => $paged
+    ));
 }
 
 function NullIsFirstPage(){
