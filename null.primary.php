@@ -15,7 +15,7 @@ function NullPrimary($contentTemplate){
 
 function NullMain($template) {
     return NullTag(
-        'main',
+        'div',
         NullLoop($template),
         array('class' => 'main')
         );

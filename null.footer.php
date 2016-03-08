@@ -12,10 +12,9 @@ function NullFooter(){
 
 function NullFooterWrapper($footerContent="") {
     $footerAttr = array(
-        'class' => 'container',
-        'role' => 'contentinfo'
+        'class' => 'container'
         );
-    
+
     return NullTag(
         'footer',
         $footerWidgets.$footerContent,

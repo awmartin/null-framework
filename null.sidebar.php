@@ -7,7 +7,7 @@ function NullSidebar($attr=array()){
     $prepend = '';
     $append = '';
     $widgetArea = 'Navigation';
-    
+
     if (array_key_exists('class', $attr)) {
         $klass = $attr['class'];
     }
@@ -21,14 +21,15 @@ function NullSidebar($attr=array()){
         $widgetArea = $attr['widgetArea'];
     }
     if (array_key_exists('id', $attr)) {
+      if ($attr['id'] != "") {
         $id = $attr['id'];
+      }
     }
-    
+
     $sidebarContent = NullWidgetArea($widgetArea);
     $sidebarAttr = array(
         'id' => $id,
-        'class' => 'sidebar widget-area '.$klass,
-        'role' => 'complementary'
+        'class' => 'sidebar widget-area '.$klass
         );
     return NullTag('aside', $prepend.$sidebarContent.$append, $sidebarAttr);
     }

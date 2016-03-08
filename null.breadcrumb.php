@@ -1,19 +1,29 @@
-<?php 
+<?php
 function NullBreadcrumb() {
     $tr = '<ul class="breadcrumb">';
-    
+
     if (is_post()) {
         $tr = $tr.list_breadcrumb_categories();
     } else if (is_page()) {
         $tr = $tr.list_breadcrumb_hierarchy();
     }
-    
 
-    
     $tr = $tr.crumb(home_link());
     $tr = $tr.'</ul>';
-    
+
     return $tr;
+}
+
+// Manually create a breadcrumb.
+function NullBuildBreadcrumb() {
+  $args = func_get_args();
+
+  $crumbs = '<ul class="breadcrumb">';
+  foreach ($args as $arg) {
+      $crumbs = $crumbs.crumb($arg);
+  }
+
+  return $crumbs.'</ul>';
 }
 
 function crumb($content) {
@@ -25,7 +35,7 @@ function home_link() {
 }
 
 function list_breadcrumb_categories() {
-    
+
     $category_list = trim(get_the_category_list( ', ' ));
     if ($category_list != "") {
         return crumb($category_list);
@@ -37,11 +47,11 @@ function list_breadcrumb_categories() {
 function list_breadcrumb_hierarchy() {
     $id = get_the_ID();
     $parent_id = get_post_field('post_parent', $id);
-    
+
     if ($parent_id > 0) {
         $parent_title = get_the_title($parent_id);
         $parent_url = get_permalink($parent_id);
-        
+
         return crumb(NullLink($parent_title, $parent_url));
     } else {
         return '';

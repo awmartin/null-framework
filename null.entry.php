@@ -7,7 +7,7 @@ function NullFeaturedEntry() {
         NullExcerpt(),
 
         NullPostHeader(
-            NullPostTitle(),
+            NullPostTitle(true),
             NullPostedOn()
             ),
 
@@ -24,7 +24,7 @@ function NullEntryImageTitleExcerpt() {
 
         NullPostHeader(
             NullPostCategories(true),
-            NullPostTitle(),
+            NullPostTitle(true),
             NullPostedOn(),
             NullPostTags(true)
             ),
@@ -37,7 +37,7 @@ function NullEntryImageTitleExcerpt() {
 function NullEntryTitleImageExcerpt() {
     return NullArticle(
         NullPostHeader(
-            NullPostTitle(), // entry-title
+            NullPostTitle(true), // entry-title
             NullPostedOn()   // entry-meta
             ),
 
@@ -54,7 +54,7 @@ function IndexEntry() {
         NullPostThumbnail(),
 
         NullPostHeader(
-            NullPostTitle(),
+            NullPostTitle(true),
             NullPostedOn()
             ),
 
@@ -68,7 +68,7 @@ function NullVerticalPostStack() {
         NullPostedOn(),
 
         NullPostHeader(
-            NullPostTitle()
+            NullPostTitle(true)
             ),
 
         NullPostThumbnail('large'),
