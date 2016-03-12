@@ -61,8 +61,7 @@ function EntryLayout($layout, $numColumns, $options=array()) {
   $orientation = $layoutParts[1];
   $partWidth = $availableColumnWidths[count($layoutParts) - 2];
 
-
-  $content = '<article class="entry">';
+  $content = '';
   for ($i=2, $len = count($layoutParts); $i < $len; $i++) {
     if (array_key_exists('entry-column-widths', $options)) {
       $partWidth = $widths[$options['entry-column-widths'][$i - 2]];
@@ -82,9 +81,12 @@ function EntryLayout($layout, $numColumns, $options=array()) {
       $content .= '</div>';
     }
   }
-  $content .= '</article>';
 
-  return $content;
+  // Compute the item schema.
+  $post_format = NullPostFormat();
+  $item_type = "http://schema.org/BlogPosting";
+
+  return NullTag('article', $content, array('class' => 'entry', 'itemscope' => null, 'itemtype' => $item_type));
 }
 
 // Passing in a function as an argument.

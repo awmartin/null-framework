@@ -133,7 +133,7 @@ function NullPostTitle($entry=false) {
     if ($entry) {
       $tag = "h3";
     }
-    $headerTitle = NullTag($tag, $linkToPost, array('class' => 'post-title'));
+    $headerTitle = NullTag($tag, $linkToPost, array('class' => 'post-title', 'itemprop' => 'name'));
 
     return $headerTitle;
 }
@@ -164,4 +164,11 @@ function NullPostThumbnail($size='medium', $placeholder=false) {
     }
 }
 
+function NullPostFormat() {
+  if (has_post_format()) {
+    return get_post_format();
+  } else {
+    return 'standard';
+  }
+}
 ?>
