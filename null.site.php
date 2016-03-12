@@ -1,4 +1,29 @@
 <?php
+// Captures the contents Wordpress get_header() method.
+function NullHeader() {
+    ob_start();
+    get_header();
+    $header = ob_get_contents();
+    ob_end_clean();
+
+    return $header;
+}
+
+function NullFooter(){
+    ob_start();
+    get_footer();
+    $footer = ob_get_contents();
+    ob_end_clean();
+    return $footer;
+}
+
+function NullHeroText($text) {
+  return NullTag('div', $text, array('class' => 'hero'));
+}
+
+function NullSectionTitle($content) {
+  return NullTag('h2', $content);
+}
 
 function NullSiteTitle($wrap=true) {
     $siteTitle = get_bloginfo('name');
@@ -16,8 +41,7 @@ function NullSiteTitle($wrap=true) {
 }
 
 function NullSiteDescription() {
-    return get_bloginfo('description');
-    // return NullTag('h2', get_bloginfo('description'), array('id' => 'site-description'));
+    return NullTag('p', get_bloginfo('description'), array('id' => 'site-description'));
 }
 
 function NullGoogleAnalytics($account) {
@@ -35,16 +59,9 @@ function NullGoogleAnalytics($account) {
     return $ga;
 }
 
-function NullSiteTags(){
-    $tags = get_tags();
-    $html = '<div class="tags section">';
-    foreach ( $tags as $tag ) {
-    	$tag_link = get_tag_link( $tag->term_id );
-
-    	$html .= "<a href='{$tag_link}' title='{$tag->name} Tag' class='{$tag->slug}'>";
-    	$html .= "{$tag->name}</a> ";
-    }
-    $html .= '</div>';
-    return $html;
+function NullBodyClass(){
+    $classes = get_body_class();
+    $classes[] = NullType();
+    return implode(" ", $classes);
 }
 ?>

@@ -21,12 +21,4 @@ function NullFlag($flag, $attr=array()) {
     $end = ">";
     return $start.$end;
 }
-
-function NullClear(){
-    return NullTag('div', "", array('class' => 'clear'));
-}
-
-function NullHeaderClear(){
-    return NullTag('div', "", array('class' => 'header-clear'));
-}
 ?>

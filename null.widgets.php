@@ -4,8 +4,18 @@
 function NullWidgetArea($id) {
     ob_start();
     dynamic_sidebar($id);
-    $sidebar = ob_get_contents();
+    $widgets = ob_get_contents();
     ob_end_clean();
-    return $sidebar;
+    return $widgets;
+}
+
+function NullHorizontalWidgetArea($id) {
+  return NullTag("div",
+    NullTag("div",
+      NullWidgetArea($id),
+      array('class' => 'row')
+    ),
+    array('class' => 'container')
+  );
 }
 ?>

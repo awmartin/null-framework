@@ -1,69 +1,21 @@
 <?php
 
-// Notes: How to extract function arguments.
-// func_num_args(), func_get_arg(), and func_get_args()
-function NullPostHeader() {
-    $args = func_get_args();
-    $content = "";
-    foreach ($args as $arg) {
-        $content = $content.$arg;
-    }
-    return NullTag(
-        'header',
-        $content,
-        array('class' => 'post-header')
-        );
-    }
-
-function NullStack($args, $tag='div', $attr=array()) {
-    $tr = "";
-    foreach ($args as $arg) {
-        $tr = $tr.$arg;
-        }
-    return NullTag($tag, $tr, $attr);
-    }
-
-// Returns a <section> tag holding the content of the current post or page.
-function NullContent($more=false) {
-    return NullTag(
-        'section',
-        NullPostContent($more),
-        array('class' => 'post-content clearfix')
-        );
-}
-
-// Temporary solution to the content-sidebar, sidebar-content layout problem.
-function NullContentBody($more=false, $widgetArea='Post Sidebar', $reverse=false){
-    $content = NullContent($more);
-    $sidebar = NullPostSidebar($widgetArea);
-    
-    $tr = $content.$sidebar;
-    if ($reverse){
-        $tr = $sidebar.$content;
-    }
-    
-    return NullTag(
-        'div',
-        $tr,
-        array('class' => 'content-body row')
-        );
-}
-
-function NullPostSidebar($widgetArea='Post Sidebar') {
-    $sidebar = NullWidgetArea($widgetArea);
-    return NullTag(
-        'aside',
-        $sidebar,
-        array('class' => 'post-sidebar')
-    );
+function NullPostSidebar() {
+  $sidebar = NullWidgetArea('Post');
+  return NullTag(
+    'aside',
+    $sidebar
+  );
 }
 
 function NullPostContent($more=false) {
-    if ($more) {
-        return get_post_content( __( 'Continue reading <span class="meta-nav">&rarr;</span>', 'plinth' ) );
-    } else {
-        return get_post_content();
-    }
+  $content = "";
+  if ($more) {
+    $content = get_post_content( __( 'Continue reading <span class="meta-nav">&rarr;</span>', 'plinth' ) );
+  } else {
+    $content = get_post_content();
+  }
+  return $content;
 }
 
 function get_post_content($more_link_text = null, $stripteaser = false){
@@ -75,55 +27,13 @@ function get_post_content($more_link_text = null, $stripteaser = false){
 }
 
 function NullPostPagination() {
-    $attr = array(
-        'before' => '<div class="page-links row">' . __( 'Pages:', 'plinth' ),
-        'after' => '</div>',
-        'echo' => 0
-        );
-    return wp_link_pages($attr);
-    }
-
-
-function NullPostFooter() {
-	/* translators: used between list items, there is a space after the comma */
-	$category_list = get_the_category_list( __( ', ', 'plinth' ) );
-
-	/* translators: used between list items, there is a space after the comma */
-	$tag_list = get_the_tag_list( '', __( ', ', 'plinth' ) );
-
-	if ( ! plinth_categorized_blog() or !is_post()) {
-		// This blog only has 1 category so we just need to worry about tags in the meta text
-		if ( '' != $tag_list ) {
-			$meta_text = __( 'This entry was tagged %2$s. Bookmark the <a href="%3$s" title="Permalink to %4$s" rel="bookmark">permalink</a>.', 'plinth' );
-		} else {
-			$meta_text = __( 'Bookmark the <a href="%3$s" title="Permalink to %4$s" rel="bookmark">permalink</a>.', 'plinth' );
-		}
-
-	} else {
-		// But this blog has loads of categories so we should probably display them here
-		if ( '' != $tag_list ) {
-			$meta_text = __( 'This entry was posted in %1$s and tagged %2$s. Bookmark the <a href="%3$s" title="Permalink to %4$s" rel="bookmark">permalink</a>.', 'plinth' );
-		} else {
-			$meta_text = __( 'This entry was posted in %1$s. Bookmark the <a href="%3$s" title="Permalink to %4$s" rel="bookmark">permalink</a>.', 'plinth' );
-		}
-
-	} // end check for categories on this blog
-
-	$content = sprintf(
-		$meta_text,
-		$category_list,
-		$tag_list,
-		get_permalink(),
-		the_title_attribute( 'echo=0' )
-	    );
-    
-    $edit_link = NullEditPostLink();
-    $content = $content.$edit_link;
-    
-    $attr = array('class' => 'entry-meta');
-    return NullTag('footer', $content, $attr);
+  $attr = array(
+    'before' => '<div class="page-links row">' . __( 'Pages:', 'plinth' ),
+    'after' => '</div>',
+    'echo' => 0
+    );
+  return wp_link_pages($attr);
 }
-
 
 function NullEditPostLink() {
     return return_edit_post_link(
@@ -148,38 +58,6 @@ function return_edit_post_link( $link = null, $before = '', $after = '', $id = 0
     return $before . apply_filters( 'edit_post_link', $link, $post->ID ) . $after;
 }
 
-function NullArticle() {
-    $args = func_get_args();
-    
-    $attr = array(
-        'class' => implode(" ", get_post_class())
-        );
-    
-    $contentArgs = array();
-    $attrArgs = array();
-    foreach ($args as $arg) {
-        if (is_array($arg)) {
-            $attrArgs[] = $arg;
-        } else {
-            $contentArgs[] = $arg;
-        }
-    }
-    
-    foreach ($attrArgs as $attrArg) {
-        foreach ($attrArg as $key => $value) {
-            if (array_key_exists('class', $attr)) {
-                $attr[$key] = $attr[$key]." ".$value;
-            } else {
-                $attr[$key] = $value;
-            }
-        }
-    }
-    
-    return NullStack($contentArgs, 'article', $attr);
-}
-
-
-
 function is_post(){
     return 'post' == get_post_type();
 }
@@ -190,6 +68,127 @@ function sep(){
 
 function NullReadMoreLink() {
     return NullTag('p', NullLink('Read more...', get_permalink()), array('class' => 'read-more'));
+}
+
+function NullExcerpt($attr=null) {
+
+    global $more;
+    $original_more = $more;
+    $more = 0;
+
+    $excerpt = get_the_content("");
+    $excerpt = trim($excerpt);
+    $excerpt = apply_filters('the_content', $excerpt);
+    $excerpt = str_replace(']]>', ']]&gt;', $excerpt);
+    $more = $original_more;
+
+    if (hasThumbnail()) {
+        $class = "excerpt";
+        }
+    else {
+        $class = "excerpt no-thumbnail";
+        }
+
+    $attr = array('class' => $class);
+    return NullTag('div', $excerpt, $attr);
+}
+
+function NullContentWithoutExcerpt($append="") {
+    global $more;
+    $original_more = $more;
+    $more = 1;
+
+    $content = get_the_content('', true);
+    $content = apply_filters('the_content', $content);
+    $content = str_replace(']]>', ']]&gt;', $content);
+
+    $section = NullStack(array($content), 'section', array('class' => 'post-content clearfix'));
+
+    $more = $original_more;
+
+    $toAppend = NullTag('div', $append);
+    return NullTag('div', $section.$toAppend, array('class' => 'content-body row'));
+}
+
+function NullFirstParagraph($asExcerpt=true) {
+    $excerpt = NullExcerpt();
+    $first_paragraph = getTextBetweenTags($excerpt, 'p');
+
+    if (!$asExcerpt) {
+        return $first_paragraph;
+    }
+
+    if (hasThumbnail()) {
+        $class = "excerpt";
+        }
+    else {
+        $class = "excerpt no-thumbnail";
+        }
+
+    $attr = array('class' => $class);
+    return NullTag('div', NullTag('p', $first_paragraph), $attr);
+}
+
+function getTextBetweenTags($string, $tagname) {
+    $pattern = "/<$tagname\s?[^>]*?>([\w\W]*?)<\/$tagname>/";
+    preg_match($pattern, $string, $matches);
+    return $matches[1];
+}
+
+function NullContentWithoutFirstParagraph() {
+    $content = NullContent();
+    return str_replace(NullFirstParagraph(false), "", $content);
+}
+
+function NullPostTitle($entry=false) {
+    $title = get_the_title();
+    $permalink = get_permalink();
+    $linkTitleAttr = esc_attr(
+                    sprintf( __( 'Permalink to %s', 'plinth' ),
+                    the_title_attribute( 'echo=0' )
+                    )
+                );
+
+    $linkAttr = array(
+            'title' => $linkTitleAttr,
+            'href' => $permalink,
+            'rel' => 'bookmark'
+            );
+    $linkToPost = NullTag('a', $title, $linkAttr);
+
+    $tag = "h1";
+    if ($entry) {
+      $tag = "h3";
+    }
+    $headerTitle = NullTag($tag, $linkToPost, array('class' => 'post-title'));
+
+    return $headerTitle;
+}
+
+function hasThumbnail() {
+    return function_exists('has_post_thumbnail') && has_post_thumbnail();
+}
+
+
+function NullPostThumbnail($size='medium', $placeholder=false) {
+    if (hasThumbnail()) {
+        $permalink = get_permalink();
+        $thumbnail = get_the_post_thumbnail(get_the_ID(), $size);
+        $linkAttr = array('href' => $permalink);
+
+        $content = NullTag('a', $thumbnail, $linkAttr);
+        $attr = array('class' => 'thumbnail');
+        return NullTag('div', $content, $attr);
+    } else {
+        if ($placeholder) {
+            $attr = array('class' => 'thumbnail');
+            return NullTag('div', '&nbsp;', $attr);
+        } else {
+            $attr = array('class' => 'empty-thumbnail');
+            return NullTag('div', '<!--no thumbnail here-->', $attr);
+        }
+
+    }
 }
 
 ?>

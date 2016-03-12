@@ -1,16 +1,5 @@
 <?php
 
-function NullArchiveHeader() {
-    return NullStack( array(
-            NullTag('h1', NullArchiveTitle(), array('class' => 'page-title')),
-            NullCategoryDescription(),
-            NullTagDescription()
-            ),
-        'header',
-        array('class' => 'page-header')
-        );
-}
-
 function NullArchiveTitle(){
 
 	if ( is_category() ) :
