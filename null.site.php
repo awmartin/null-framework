@@ -37,11 +37,11 @@ function NullSiteTitle($wrap=true) {
         );
     $link = NullTag('a', $siteTitle, $linkAttr);
     if (!$wrap) return $link;
-    return NullTag('h1', $link, array('id' => 'site-title'));
+    return NullTag('h1', $link);
 }
 
 function NullSiteDescription() {
-    return NullTag('p', get_bloginfo('description'), array('id' => 'site-description'));
+    return NullTag('p', get_bloginfo('description'));
 }
 
 function NullGoogleAnalytics($account) {
@@ -63,5 +63,9 @@ function NullBodyClass(){
     $classes = get_body_class();
     $classes[] = NullType();
     return implode(" ", $classes);
+}
+
+function NullIsFrontPage() {
+  return is_front_page();
 }
 ?>

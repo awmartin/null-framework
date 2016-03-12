@@ -18,7 +18,6 @@ $availableColumnWidths = array(
   12 => 'one'
 );
 
-
 $widths = array(
   1 => 'one',
   2 => 'two',
@@ -45,8 +44,8 @@ function EntryLayout($layout, $numColumns, $options=array()) {
   $availableContent = array(
     'title' => NullPostTitle(true),
     'thumbnail' => NullPostThumbnail('medium', true),
-    'categories' => NullPostCategories(true),
-    'tags' => NullPostTags(true),
+    'categories' => NullPostCategories(),
+    'tags' => NullPostTags(),
     'posted_on' => NullPostedOn(),
     'excerpt' => NullFirstParagraph()
   );
@@ -63,7 +62,7 @@ function EntryLayout($layout, $numColumns, $options=array()) {
   $partWidth = $availableColumnWidths[count($layoutParts) - 2];
 
 
-  $content = '<div class="row entry">';
+  $content = '<article class="entry">';
   for ($i=2, $len = count($layoutParts); $i < $len; $i++) {
     if (array_key_exists('entry-column-widths', $options)) {
       $partWidth = $widths[$options['entry-column-widths'][$i - 2]];
@@ -83,14 +82,9 @@ function EntryLayout($layout, $numColumns, $options=array()) {
       $content .= '</div>';
     }
   }
-  $content .= '</div>';
-
+  $content .= '</article>';
 
   return $content;
-}
-
-function PostLayout($layout) {
-
 }
 
 // Passing in a function as an argument.
@@ -160,35 +154,51 @@ function NullPagination() {
     );
 }
 
-function NullQuery($posts_per_page=10, $categories=array(), $tags=array()) {
+function NullQuery($posts_per_page=10, $options=array()) {
     global $wp_query;
+
+    $categories = array_key_exists('categories', $options) ? $options['categories'] : array();
+    $tags = array_key_exists('tags', $options) ? $options['tags'] : array();
+    $post_format = array_key_exists('format', $options) ? $options['format'] : 'all';
 
     $cat = implode(',', $categories);
     $tag = implode(',', $tags);
 
     $paged = ( get_query_var( 'paged' ) ) ? get_query_var( 'paged' ) : 1;
 
-    $wp_query = new WP_Query( array(
+    if ($post_format == 'all') {
+      // Standard query to get all posts.
+      $wp_query = new WP_Query( array(
         'posts_per_page' => $posts_per_page,
         'category_name' => $cat,
         'tag' => $tag,
         'paged' => $paged
-    ));
-}
-
-function NullIsFirstPage(){
-  $paged = ( get_query_var( 'paged' ) ) ? get_query_var( 'paged' ) : 1;
-  return $paged == 1;
-}
-
-// If desired, a featured entry can be displayed on the front page with a
-// different style. Currently implemented as a category called "features".
-function NullFeature(){
-  NullQuery(1, array('features'));
-  return NullTag(
-    'div',
-    NullLoop('NullFeaturedEntry', 'empty')."<hr>",
-    array('class' => 'row featured')
-  );
+      ));
+    } else if ($post_format == 'standard') {
+      // If we want standard posts, we have to exclude all the other standard types.
+      $wp_query = new WP_Query( array(
+        'posts_per_page' => $posts_per_page,
+        'paged' => $paged,
+        'tax_query' => array( array(
+          'taxonomy' => 'post_format',
+          'field' => 'slug',
+          'terms' => array('post-format-aside', 'post-format-gallery', 'post-format-link',
+            'post-format-image', 'post-format-quote', 'post-format-status',
+            'post-format-audio', 'post-format-chat', 'post-format-video'),
+          'operator' => 'NOT IN'
+        ))
+      ));
+    } else {
+      // Here, we want a non-standard post, so query directly against the taxonomy.
+      $wp_query = new WP_Query( array(
+        'posts_per_page' => $posts_per_page,
+        'paged' => $paged,
+        'tax_query' => array( array(
+            'taxonomy' => 'post_format',
+            'field' => 'slug',
+            'terms' => 'post-format-'.$post_format
+          ))
+      ));
+    }
 }
 ?>
