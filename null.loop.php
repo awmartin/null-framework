@@ -47,8 +47,10 @@ function EntryLayout($layout, $numColumns, $options=array()) {
     'categories' => NullPostCategories(),
     'tags' => NullPostTags(),
     'posted_on' => NullPostedOn(),
-    'excerpt' => NullFirstParagraph()
+    'excerpt' => NullFirstParagraph(),
+    'format' => NullPostFormat()
   );
+
   $availableContent['titleplus'] =
     $availableContent['categories']
     .$availableContent['title']
@@ -82,11 +84,9 @@ function EntryLayout($layout, $numColumns, $options=array()) {
     }
   }
 
-  // Compute the item schema.
-  $post_format = NullPostFormat();
-  $item_type = "http://schema.org/BlogPosting";
+  $schema = NullPostSchema();
 
-  return NullTag('article', $content, array('class' => 'entry', 'itemscope' => null, 'itemtype' => $item_type));
+  return NullTag('article', $content.$schema, array('class' => 'entry'));
 }
 
 // Passing in a function as an argument.

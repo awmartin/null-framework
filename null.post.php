@@ -36,38 +36,37 @@ function NullPostPagination() {
 }
 
 function NullEditPostLink() {
-    return return_edit_post_link(
-            __( 'Edit', 'plinth' ),
-            '<span class="edit-link">',
-            '</span>'
-            );
+  return return_edit_post_link(
+    __( 'Edit', 'plinth' ),
+    '<span class="edit-link">',
+    '</span>'
+  );
 }
 
 function return_edit_post_link( $link = null, $before = '', $after = '', $id = 0 ) {
-    if ( !$post = get_post( $id ) )
-            return;
+  if ( !$post = get_post( $id ) ) return;
 
-    if ( !$url = get_edit_post_link( $post->ID ) )
-            return;
+  if ( !$url = get_edit_post_link( $post->ID ) ) return;
 
-    if ( null === $link )
-            $link = __('Edit This');
+  if ( null === $link ) {
+    $link = __('Edit This');
+  }
 
-    $post_type_obj = get_post_type_object( $post->post_type );
-    $link = '<a class="post-edit-link" href="' . $url . '" title="' . esc_attr( $post_type_obj->labels->edit_item ) . '">' . $link . '</a>';
-    return $before . apply_filters( 'edit_post_link', $link, $post->ID ) . $after;
+  $post_type_obj = get_post_type_object( $post->post_type );
+  $link = '<a class="post-edit-link" href="' . $url . '" title="' . esc_attr( $post_type_obj->labels->edit_item ) . '">' . $link . '</a>';
+  return $before . apply_filters( 'edit_post_link', $link, $post->ID ) . $after;
 }
 
 function is_post(){
-    return 'post' == get_post_type();
+  return 'post' == get_post_type();
 }
 
 function sep(){
-    return NullTag('span', ' | ', array('class' => 'sep'));
+  return NullTag('span', ' | ', array('class' => 'sep'));
 }
 
 function NullReadMoreLink() {
-    return NullTag('p', NullLink('Read more...', get_permalink()), array('class' => 'read-more'));
+  return NullTag('p', NullLink('Read more...', get_permalink()), array('class' => 'read-more'));
 }
 
 function NullExcerpt($attr=null) {
@@ -92,14 +91,7 @@ function NullFirstParagraph($asExcerpt=true) {
     return $first_paragraph;
   }
 
-  if (hasThumbnail()) {
-    $class = "excerpt";
-  } else {
-    $class = "excerpt no-thumbnail";
-  }
-
-  $attr = array('class' => $class);
-  return NullTag('div', NullTag('p', $first_paragraph), $attr);
+  return NullTag('p', $first_paragraph);
 }
 
 function getTextBetweenTags($string, $tagname) {
@@ -108,34 +100,37 @@ function getTextBetweenTags($string, $tagname) {
   return $matches[1];
 }
 
-function NullContentWithoutFirstParagraph() {
-    $content = NullContent();
-    return str_replace(NullFirstParagraph(false), "", $content);
+function NullPostContentWithoutExcerpt() {
+  $content = NullPostContent();
+  $content = str_replace(NullFirstParagraph(), "", $content);
+
+  // Remove that damned paragraph/span combination from the <!--more--> tag.
+  $content = preg_replace('/<p><span id="more-[0-9]"><\/span><\/p>/', "", $content);
+
+  return $content;
 }
 
 function NullPostTitle($entry=false) {
-    $title = get_the_title();
-    $permalink = get_permalink();
-    $linkTitleAttr = esc_attr(
-                    sprintf( __( 'Permalink to %s', 'plinth' ),
-                    the_title_attribute( 'echo=0' )
-                    )
-                );
+  $title = get_the_title();
+  $permalink = get_permalink();
+  $linkTitleAttr = esc_attr(
+    sprintf( __( 'Permalink to %s', 'plinth' ), the_title_attribute( 'echo=0' ))
+  );
 
-    $linkAttr = array(
-            'title' => $linkTitleAttr,
-            'href' => $permalink,
-            'rel' => 'bookmark'
-            );
-    $linkToPost = NullTag('a', $title, $linkAttr);
+  $linkAttr = array(
+    'title' => $linkTitleAttr,
+    'href' => $permalink,
+    'rel' => 'bookmark'
+  );
+  $linkToPost = NullTag('a', $title, $linkAttr);
 
-    $tag = "h1";
-    if ($entry) {
-      $tag = "h3";
-    }
-    $headerTitle = NullTag($tag, $linkToPost, array('class' => 'post-title', 'itemprop' => 'name'));
+  $tag = "h1";
+  if ($entry) {
+    $tag = "h3";
+  }
+  $headerTitle = NullTag($tag, $linkToPost, array('class' => 'post-title'));
 
-    return $headerTitle;
+  return $headerTitle;
 }
 
 function hasThumbnail() {
@@ -146,10 +141,11 @@ function hasThumbnail() {
 function NullPostThumbnail($size='medium', $placeholder=false) {
     if (hasThumbnail()) {
         $permalink = get_permalink();
-        $thumbnail = get_the_post_thumbnail(get_the_ID(), $size);
-        $linkAttr = array('href' => $permalink);
+        $thumbnail = get_the_post_thumbnail(get_the_ID(), $size); // <img />
 
+        $linkAttr = array('href' => $permalink);
         $content = NullTag('a', $thumbnail, $linkAttr);
+
         $attr = array('class' => 'thumbnail');
         return NullTag('div', $content, $attr);
     } else {
@@ -157,10 +153,9 @@ function NullPostThumbnail($size='medium', $placeholder=false) {
             $attr = array('class' => 'thumbnail');
             return NullTag('div', '&nbsp;', $attr);
         } else {
-            $attr = array('class' => 'empty-thumbnail');
-            return NullTag('div', '&nbsp;<!--no thumbnail here-->', $attr);
+            $attr = array('class' => 'thumbnail empty');
+            return NullTag('div', '<!--no thumbnail here-->', $attr);
         }
-
     }
 }
 
@@ -170,5 +165,27 @@ function NullPostFormat() {
   } else {
     return 'standard';
   }
+}
+
+function NullIsPost() {
+  return NullPostType() == 'post';
+}
+
+function NullIsPage() {
+  return NullPostType() == 'page';
+}
+
+function NullPostType() {
+  global $post;
+  return $post->post_type;
+}
+
+function NullPostSlug() {
+  global $post;
+  return $post->post_name;
+}
+
+function NullIsAbout() {
+  return NullPostSlug() == 'about';
 }
 ?>

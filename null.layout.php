@@ -3,11 +3,11 @@
 /* Placeholders for future layout methods. */
 
 function NullFullPage($content) {
-  return $content;
+  return NullSection($content);
 }
 
 function NullContentSidebar($content, $sidebar) {
-  $layout = '<div class="section"><div class="container"><div class="row">';
+  $layout = '<div class="row">';
 
     $layout .= '<div class="eight columns">';
     $layout .= $content;
@@ -17,13 +17,13 @@ function NullContentSidebar($content, $sidebar) {
     $layout .= $sidebar;
     $layout .= '</aside>';
 
-  $layout .= '</div></div></div>';
+  $layout .= '</div>';
 
-  return $layout;
+  return NullSection($layout);
 }
 
 function NullSidebarContent($content, $sidebar) {
-  $layout = '<div class="section"><div class="container"><div class="row">';
+  $layout = '<div class="row">';
 
     $layout .= '<aside class="four columns">';
     $layout .= $sidebar;
@@ -33,9 +33,9 @@ function NullSidebarContent($content, $sidebar) {
     $layout .= $content;
     $layout .= '</div>';
 
-  $layout .= '</div></div></div>';
+  $layout .= '</div>';
 
-  return $layout;
+  return NullSection($layout);
 }
 
 function NullSection($content, $options=array()) {
@@ -48,5 +48,4 @@ function NullSection($content, $options=array()) {
     $options
   );
 }
-
 ?>
