@@ -68,4 +68,18 @@ function NullBodyClass(){
 function NullIsFrontPage() {
   return is_front_page();
 }
+
+function NullSiteCategories() {
+  $categories = get_categories();
+
+  $list = "";
+  foreach ($categories as $category) {
+    $list .= NullTag('li',
+      NullLink($category->cat_name, esc_url( get_category_link( $category->term_id ) )),
+      array('class' => 'category')
+    );
+  }
+
+  return NullTag('ul', $list, array('class' => 'categories'));
+}
 ?>

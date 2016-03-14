@@ -105,7 +105,7 @@ function NullPostContentWithoutExcerpt() {
   $content = str_replace(NullFirstParagraph(), "", $content);
 
   // Remove that damned paragraph/span combination from the <!--more--> tag.
-  $content = preg_replace('/<p><span id="more-[0-9]"><\/span><\/p>/', "", $content);
+  $content = preg_replace('/<p><span id="more-([0-9])*"><\/span><\/p>/', "", $content);
 
   return $content;
 }
@@ -150,7 +150,7 @@ function NullPostThumbnail($size='medium', $placeholder=false) {
         return NullTag('div', $content, $attr);
     } else {
         if ($placeholder) {
-            $attr = array('class' => 'thumbnail');
+            $attr = array('class' => 'thumbnail empty');
             return NullTag('div', '&nbsp;', $attr);
         } else {
             $attr = array('class' => 'thumbnail empty');
