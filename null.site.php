@@ -69,6 +69,10 @@ function NullIsFrontPage() {
   return is_front_page();
 }
 
+function NullIsArchive() {
+  return is_archive();
+}
+
 function NullSiteCategories() {
   $categories = get_categories();
 
