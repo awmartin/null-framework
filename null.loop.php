@@ -43,7 +43,7 @@ function EntryLayout($layout, $numColumns, $options=array()) {
 
   $availableContent = array(
     'title' => NullPostTitle(true),
-    'thumbnail' => NullPostThumbnail('medium', true),
+    'thumbnail' => NullPostThumbnail('thumbnail', true),
     'categories' => NullPostCategories(),
     'tags' => NullPostTags(),
     'posted_on' => NullPostedOn(),
