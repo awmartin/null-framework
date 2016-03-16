@@ -12,27 +12,28 @@ is a sample `single.php` page:
 
     echo NullContentSidebarLayout(
       NullPostContent(),
-      NullPostSidebar()
+      NullWidgetArea('Post')
     );
 
     echo NullFooter();
     ?>
 
-Instead of using embedded PHP, inconsistenly named and functioning Wordpress theme functions,
-and HTML, you can use Null functions with a consistent naming scheme, which are named after what
-they display. CSS is standardized to make it easier to use typical layout schemes like grids,
-sidebars, etc.
+Instead of using embedded PHP and complicated, inconsistently named Wordpress functions, you
+can use Null functions with a consistent naming and standardized HTML and CSS to get started,
+then work from there.
+
+The resulting HTML is very clean and responsive due to the excellent, minimal work in
+[Dave Gamache's](https://github.com/dhg) [Skeleton](http://getskeleton.com) boilerplate CSS
+framework.
 
 ## Example
 
-For a sample theme using Null and a theme you can start with as a base theme (with CSS), see
-[Spatial Pixel](https://github.com/awmartin/spatialpixel).
+An example site laid out with null is my site [Anomalus](http://anomalus.com).
 
 ## Using Null
 
-Null is designed to be added to an existing theme and migrated carefully. Or, you can start with a
-new theme entirely. Add a folder `null` to your existing theme, then require `null.php` from your
-`functions.php` file. E.g.
+Clone this repository into a folder `null` to your existing theme, then require `null.php`
+in your `functions.php` file. E.g.
 
     require( get_template_directory() . '/null/null.php' );
 
