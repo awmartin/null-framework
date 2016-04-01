@@ -13,8 +13,64 @@ function NullPostTags(){
   return get_the_tag_list('<ul class="post-tags"><li>','</li><li>','</li></ul>');
 }
 
-function NullPostCategories() {
-  return get_the_category_list();
+function format_category($category, $args) {
+  $linked = true;
+  if (array_key_exists('linked', $args)) {
+    $linked = $args['linked'];
+  }
+
+  if ($linked) {
+    return sprintf(
+      '<li><a href="%1$s">%2$s</a></li>',
+      esc_url( get_category_link( $category->term_id ) ),
+      esc_html( $category->name )
+    );
+  } else {
+    return sprintf(
+      '<li>%1$s</li>',
+      esc_html( $category->name )
+    );
+  }
+}
+
+function NullPostCategories($args=array()) {
+  $html = true;
+  $exclude_uncategorized = true;
+  $linked = true;
+  if (array_key_exists('exclude_uncategorized', $args)) {
+    $exclude_uncategorized = $args['exclude_uncategorized'];
+  }
+  if (array_key_exists('html', $args)) {
+    $html = $args['html'];
+  }
+  if (array_key_exists('linked', $args)) {
+    $linked = $args['linked'];
+  }
+
+  $categories = get_the_category();
+  $cats = array();
+
+  foreach ( $categories as $category ) {
+    if ($exclude_uncategorized && $category->name == "Uncategorized") {
+      if ($html) {
+        $cats[] = '<li>&nbsp;</li>';
+      } else {
+        $cats[] = ' ';
+      }
+    } else {
+      if ($html) {
+        $cats[] = format_category($category, $args);
+      } else {
+        $cats[] = $category->name;
+      }
+    }
+  }
+
+  if ($html) {
+    return NullTag('ul', implode('', $cats), array('class' => 'post-categories'));
+  } else {
+    return implode(' ', $cats);
+  }
 }
 
 /*
