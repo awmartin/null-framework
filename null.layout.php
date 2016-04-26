@@ -1,21 +1,16 @@
 <?php
 
-/* Placeholders for future layout methods. */
+function NullFullWidth($content) {
+  $layout = NullTag('div', $content, array('class' => 'row'));
 
-function NullFullPage($content) {
-  return NullSection($content);
+  return NullSection($layout);
 }
 
 function NullContentSidebar($content, $sidebar) {
   $layout = '<div class="row">';
 
-    $layout .= '<main class="eight columns">';
-    $layout .= $content;
-    $layout .= '</main>';
-
-    $layout .= '<aside class="four columns">';
-    $layout .= $sidebar;
-    $layout .= '</aside>';
+    $layout .= NullTag('main', $content, array('class' => 'eight columns'));
+    $layout .= NullTag('aside', $sidebar, array('class' => 'four columns'));
 
   $layout .= '</div>';
 
@@ -25,13 +20,8 @@ function NullContentSidebar($content, $sidebar) {
 function NullSidebarContent($content, $sidebar) {
   $layout = '<div class="row">';
 
-    $layout .= '<aside class="four columns">';
-    $layout .= $sidebar;
-    $layout .= '</aside>';
-
-    $layout .= '<main class="eight columns">';
-    $layout .= $content;
-    $layout .= '</main>';
+    $layout .= NullTag('aside', $sidebar, array('class' => 'four columns'));
+    $layout .= NullTag('main', $content, array('class' => 'eight columns'));
 
   $layout .= '</div>';
 
@@ -39,14 +29,7 @@ function NullSidebarContent($content, $sidebar) {
 }
 
 function NullSection($content, $options=array()) {
-  return NullTag('section',
-    NullTag(
-      'div',
-      $content,
-      array('class' => 'container')
-    ),
-    $options
-  );
+  return NullTag('section', NullContainer($content), $options);
 }
 
 function NullContainer($content) {
@@ -54,14 +37,7 @@ function NullContainer($content) {
 }
 
 function NullMain($content, $options=array()) {
-  return NullTag('main',
-    NullTag(
-      'div',
-      $content,
-      array('class' => 'container')
-    ),
-    $options
-  );
+  return NullTag('main', NullContainer($content), $options);
 }
 
 ?>
