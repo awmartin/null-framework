@@ -39,12 +39,14 @@ function EntryLayout($layout, $numColumns, $options=array()) {
   global $widths;
 
   $columnWidth = $availableColumnWidths[$numColumns];
-  $class = $columnWidth." columns";
+  $columnWidthClass = $columnWidth." columns";
 
   $availableContent = array(
     'title' => NullPostTitle(true),
     'thumbnail' => NullPostThumbnail('thumbnail', true),
+    'featured' => NullFeaturedImage(),
     'categories' => NullPostCategories(),
+    'unlinkedcategories' => NullPostCategories(array('linked' => false)),
     'tags' => NullPostTags(),
     'posted_on' => NullPostedOn(),
     'excerpt' => NullFirstParagraph(),
@@ -60,33 +62,56 @@ function EntryLayout($layout, $numColumns, $options=array()) {
   $layoutParts = split('-', $layout);
 
   $type = $layoutParts[0];
-  $orientation = $layoutParts[1];
-  $partWidth = $availableColumnWidths[count($layoutParts) - 2];
 
-  $content = '';
-  for ($i=2, $len = count($layoutParts); $i < $len; $i++) {
-    if (array_key_exists('entry-column-widths', $options)) {
-      $partWidth = $widths[$options['entry-column-widths'][$i - 2]];
+  if ($type == "entry") {
+    $orientation = $layoutParts[1];
+    $partWidth = $availableColumnWidths[count($layoutParts) - 2];
+
+    $content = '';
+    for ($i=2, $len = count($layoutParts); $i < $len; $i++) {
+      if (array_key_exists('entry-column-widths', $options)) {
+        $partWidth = $widths[$options['entry-column-widths'][$i - 2]];
+      }
+
+      if ($orientation == 'horizontal') {
+        $content .= '<div class="'.$partWidth.' columns">';
+      }
+
+      $item = trim($availableContent[$layoutParts[$i]]);
+      if ($item == '') {
+        $item = '&nbsp;';
+      }
+      $content .= $item;
+
+      if ($orientation == 'horizontal') {
+        $content .= '</div>';
+      }
     }
 
-    if ($orientation == 'horizontal') {
-      $content .= '<div class="'.$partWidth.' columns">';
+    $schema = NullPostSchema();
+    $attr = array('class' => 'entry');
+    if ($orientation == 'vertical') {
+      // Apply the width of the entire entry here if we're using a vertical entry layout.
+      $attr['class'] .= " ".$columnWidthClass;
+    }
+    return NullTag('article', $content.$schema, $attr);
+
+  } else {
+
+    $content = '';
+    for ($i=1, $len = count($layoutParts); $i < $len; $i++) {
+      $item = trim($availableContent[$layoutParts[$i]]);
+      if ($item == '') {
+        $item = '';
+      }
+      $content .= $item;
     }
 
-    $item = trim($availableContent[$layoutParts[$i]]);
-    if ($item == '') {
-      $item = '&nbsp;';
-    }
-    $content .= $item;
+    $schema = NullPostSchema();
 
-    if ($orientation == 'horizontal') {
-      $content .= '</div>';
-    }
+    $attr = array('class' => $type.' '.NullPostCategories(array('html' => false)));
+    return NullTag('article', $content.$schema, $attr);
   }
-
-  $schema = NullPostSchema();
-
-  return NullTag('article', $content.$schema, array('class' => 'entry'));
 }
 
 // Passing in a function as an argument.
@@ -99,13 +124,13 @@ function NullLoop($layout, $numColumns=1, $options=array()) {
 
   ob_start();
 
-  // $layoutParts = split('-', $layout);
-  // $type = $layoutParts[0];
+  $layoutParts = split('-', $layout);
+  $type = $layoutParts[0];
 
   $currentPost = 0;
   if (have_posts()):
     while (have_posts()):
-      if ($currentPost % $numColumns == 0) {
+      if ($type == "entry" && $currentPost % $numColumns == 0) {
         echo StartRow();
       }
 
@@ -113,7 +138,7 @@ function NullLoop($layout, $numColumns=1, $options=array()) {
 
       echo EntryLayout($layout, $numColumns, $options);
 
-      if (($currentPost + 1) % $numColumns == 0) {
+      if ($type == "entry" && ($currentPost + 1) % $numColumns == 0) {
         echo EndRow();
       }
 

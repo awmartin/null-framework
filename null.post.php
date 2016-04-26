@@ -137,6 +137,26 @@ function hasThumbnail() {
     return function_exists('has_post_thumbnail') && has_post_thumbnail();
 }
 
+function NullFeaturedImage($size='thumbnail') {
+  if (hasThumbnail()) {
+    return NullFlag('img', array(
+      'src' => NullPostThumbnailUrl($size),
+      'class' => 'featured'
+    ));
+  } else {
+    return "";
+  }
+}
+
+function NullPostThumbnailUrl($size='thumbnail') {
+  $thumbnail = wp_get_attachment_image_src(get_post_thumbnail_id($post->ID, $size));
+
+  if (!$thumbnail[0]) {
+    return false;
+  } else {
+    return $thumbnail[0];
+  }
+}
 
 function NullPostThumbnail($size='medium', $placeholder=false) {
     if (hasThumbnail()) {
