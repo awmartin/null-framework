@@ -41,16 +41,22 @@ function EntryLayout($layout, $numColumns, $options=array()) {
   $columnWidth = $availableColumnWidths[$numColumns];
   $columnWidthClass = $columnWidth." columns";
 
+  $postTitle = NullPostTitle(true);
+  $categories = NullPostCategories();
+  $permalink = get_permalink();
+
   $availableContent = array(
-    'title' => NullPostTitle(true),
+    'title' => $postTitle,
     'thumbnail' => NullPostThumbnail('thumbnail', true),
     'featured' => NullFeaturedImage(),
-    'categories' => NullPostCategories(),
+    'linkedfeatured' => hasThumbnail() ? '<a href="'.$permalink.'" class="featured-link">'.NullFeaturedImage().'</a>' : '',
+    'categories' => $categories,
     'unlinkedcategories' => NullPostCategories(array('linked' => false)),
     'tags' => NullPostTags(),
     'posted_on' => NullPostedOn(),
     'excerpt' => NullFirstParagraph(),
-    'format' => NullPostFormat()
+    'format' => NullPostFormat(),
+    'categories+title' => '<div>'.$categories.$postTitle.'</div>'
   );
 
   $availableContent['titleplus'] =
@@ -94,6 +100,9 @@ function EntryLayout($layout, $numColumns, $options=array()) {
       // Apply the width of the entire entry here if we're using a vertical entry layout.
       $attr['class'] .= " ".$columnWidthClass;
     }
+    if ($availableContent['format']) {
+      $attr['class'] .= " ".$availableContent['format'];
+    }
     return NullTag('article', $content.$schema, $attr);
 
   } else {
@@ -110,6 +119,8 @@ function EntryLayout($layout, $numColumns, $options=array()) {
     $schema = NullPostSchema();
 
     $attr = array('class' => $type.' '.NullPostCategories(array('html' => false)));
+    $attr['data-excerpt'] = NullFirstParagraph(false);
+
     return NullTag('article', $content.$schema, $attr);
   }
 }
@@ -175,10 +186,7 @@ function NullPagination() {
     $pagination = ob_get_contents();
     ob_end_clean();
 
-    return NullTag(
-        'div',
-        $pagination
-    );
+    return $pagination;
 }
 
 function NullQuery($posts_per_page=10, $options=array()) {

@@ -61,7 +61,7 @@ function NullGoogleAnalytics($account) {
 
 function NullBodyClass(){
     $classes = get_body_class();
-    $classes[] = NullType();
+    // $classes[] = NullType();
     return implode(" ", $classes);
 }
 
@@ -85,5 +85,10 @@ function NullSiteCategories() {
   }
 
   return NullTag('ul', $list, array('class' => 'categories'));
+}
+
+function NullBodyOpen() {
+  $klass = NullBodyClass();
+  return '<body class="'.$klass.'">';
 }
 ?>

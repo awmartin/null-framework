@@ -113,12 +113,14 @@ function NullPostContentWithoutExcerpt() {
 function NullPostTitle($entry=false) {
   $title = get_the_title();
   $permalink = get_permalink();
-  $linkTitleAttr = esc_attr(
-    sprintf( __( 'Permalink to %s', 'plinth' ), the_title_attribute( 'echo=0' ))
-  );
+
+  // Remove the title="" attribute.
+  // $linkTitleAttr = esc_attr(
+  //   sprintf( __( 'Permalink to %s', 'anomalus' ), the_title_attribute( 'echo=0' ))
+  // );
 
   $linkAttr = array(
-    'title' => $linkTitleAttr,
+    // 'title' => $linkTitleAttr,
     'href' => $permalink,
     'rel' => 'bookmark'
   );
