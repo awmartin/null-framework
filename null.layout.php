@@ -7,29 +7,34 @@ function NullFullWidth($content) {
 }
 
 function NullContentSidebar($content, $sidebar) {
-  $layout = '<div class="row">';
-
-    $layout .= NullTag('main', $content, array('class' => 'eight columns'));
-    $layout .= NullTag('aside', $sidebar, array('class' => 'four columns'));
-
-  $layout .= '</div>';
-
-  return NullSection($layout);
+  return NullRow(
+    NullTag('div', $content, array('class' => 'eight columns'))
+    . NullTag('aside', $sidebar, array('class' => 'four columns'))
+    );
 }
 
 function NullSidebarContent($content, $sidebar) {
-  $layout = '<div class="row">';
+  return NullRow(
+    NullTag('aside', $sidebar, array('class' => 'four columns'))
+    . NullTag('div', $content, array('class' => 'eight columns'))
+    );
+}
 
-    $layout .= NullTag('aside', $sidebar, array('class' => 'four columns'));
-    $layout .= NullTag('main', $content, array('class' => 'eight columns'));
 
-  $layout .= '</div>';
+function NullArticle($content, $options=array()) {
+  return NullTag('article', $content, $options);
+}
 
-  return NullSection($layout);
+function NullArticleHeader($content, $options=array()) {
+  return NullTag('header', $content, $options);
+}
+
+function NullArticleFooter($content, $options=array()) {
+  return NullTag('footer', $content, $options);
 }
 
 function NullSection($content, $options=array()) {
-  return NullTag('section', NullContainer($content), $options);
+  return NullTag('section', $content, $options);
 }
 
 function NullContainer($content) {
