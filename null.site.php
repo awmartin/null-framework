@@ -85,7 +85,6 @@ function NullGoogleAnalytics($account) {
 
 function NullBodyClass(){
     $classes = get_body_class();
-    // $classes[] = NullType();
     return implode(" ", $classes);
 }
 
@@ -114,6 +113,10 @@ function NullSiteCategories() {
 function NullBodyOpen() {
   $klass = NullBodyClass();
   return '<body class="'.$klass.'">';
+}
+
+function NullBodyClose() {
+  return '</body>';
 }
 
 // Force a 404 page. Can be used in the midst of any other page.
