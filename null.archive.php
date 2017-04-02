@@ -24,15 +24,13 @@ function NullArchiveTitle() {
 
 function getArchiveTitle() {
   if ( is_category() ) :
-    return sprintf( __( '%s', 'null' ), single_cat_title( '', false ) );
+    return single_cat_title( '', false );
 
   elseif ( is_tag() ) :
-    return sprintf( __( '%s', 'null' ), single_tag_title( '', false ) );
+    return single_tag_title( '', false );
 
   elseif ( is_author() ) :
-    global $wp_query;
-    $author_obj = $wp_query->get_queried_object();
-    return $author_obj->first_name . ' ' . $author_obj->last_name;
+    return NullAuthorFullName();
 
   elseif ( is_day() ) :
     return sprintf( __( 'Daily Archives: %s', 'null' ), get_the_date() );
@@ -47,17 +45,17 @@ function getArchiveTitle() {
     return __( 'Asides', 'null' );
 
 
-  elseif ( is_tax( 'post_format', 'post-format-image' ) ) :
-    return __( 'Images', 'null');
-
-  elseif ( is_tax( 'post_format', 'post-format-video' ) ) :
-    return __( 'Videos', 'null' );
-
-  elseif ( is_tax( 'post_format', 'post-format-quote' ) ) :
-    return __( 'Quotes', 'null' );
-
-  elseif ( is_tax( 'post_format', 'post-format-link' ) ) :
-    return __( 'Links', 'null' );
+  // elseif ( is_tax( 'post_format', 'post-format-image' ) ) :
+  //   return __( 'Images', 'null');
+  //
+  // elseif ( is_tax( 'post_format', 'post-format-video' ) ) :
+  //   return __( 'Videos', 'null' );
+  //
+  // elseif ( is_tax( 'post_format', 'post-format-quote' ) ) :
+  //   return __( 'Quotes', 'null' );
+  //
+  // elseif ( is_tax( 'post_format', 'post-format-link' ) ) :
+  //   return __( 'Links', 'null' );
 
   else :
     return __( 'Archives', 'null' );
