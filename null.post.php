@@ -11,19 +11,19 @@ function NullPostSidebar() {
 function NullPostContent($more=false) {
   $content = "";
   if ($more) {
-    $content = get_post_content( __( 'Continue reading <span class="meta-nav">&rarr;</span>', 'null' ) );
+    $content = getPostContent( __( 'Continue reading <span class="meta-nav">&rarr;</span>', 'null' ) );
   } else {
-    $content = get_post_content();
+    $content = getPostContent();
   }
   return $content;
 }
 
-function get_post_content($more_link_text = null, $stripteaser = false){
-    // Emulates the_content() without being stupid.
-    $content = get_the_content($more_link_text, $stripteaser);
-    $content = apply_filters('the_content', $content);
-    $content = str_replace(']]>', ']]&gt;', $content);
-    return $content;
+function getPostContent($more_link_text = null, $stripteaser = false){
+  // Emulates the_content() without being stupid.
+  $content = get_the_content($more_link_text, $stripteaser);
+  $content = apply_filters('the_content', $content);
+  $content = str_replace(']]>', ']]&gt;', $content);
+  return $content;
 }
 
 function NullPostPagination() {
@@ -36,7 +36,7 @@ function NullPostPagination() {
 }
 
 function NullReadMoreLink() {
-  return NullTag('p', NullLink('Read more...', get_permalink()), array('class' => 'read-more'));
+  return NullLink('Read more...', get_permalink());
 }
 
 function NullExcerpt($attr=null) {
@@ -161,24 +161,24 @@ function NullPostThumbnailUrl($size='thumbnail') {
 }
 
 function NullPostThumbnail($size='medium', $placeholder=false) {
-    if (hasThumbnail()) {
-        $permalink = get_permalink();
-        $thumbnail = get_the_post_thumbnail(get_the_ID(), $size); // <img />
+  if (hasThumbnail()) {
+    $permalink = get_permalink();
+    $thumbnail = get_the_post_thumbnail(get_the_ID(), $size); // <img />
 
-        $linkAttr = array('href' => $permalink);
-        $content = NullTag('a', $thumbnail, $linkAttr);
+    $linkAttr = array('href' => $permalink);
+    $content = NullTag('a', $thumbnail, $linkAttr);
 
-        $attr = array('class' => 'thumbnail');
-        return NullTag('div', $content, $attr);
+    $attr = array('class' => 'thumbnail');
+    return NullTag('div', $content, $attr);
+  } else {
+    if ($placeholder) {
+      $attr = array('class' => 'thumbnail empty');
+      return NullTag('div', '&nbsp;', $attr);
     } else {
-        if ($placeholder) {
-            $attr = array('class' => 'thumbnail empty');
-            return NullTag('div', '&nbsp;', $attr);
-        } else {
-            $attr = array('class' => 'thumbnail empty');
-            return NullTag('div', '<!--no thumbnail here-->', $attr);
-        }
+      $attr = array('class' => 'thumbnail empty');
+      return NullTag('div', '<!--no thumbnail here-->', $attr);
     }
+  }
 }
 
 function NullPostFormat() {
@@ -228,9 +228,9 @@ function NullPostLink($content, $options=array()) {
 function NullComments($args=array()) {
   ob_start();
 
-  // If comments are open or we have at least one comment, load up the comment template
-  if ( comments_open() || '0' != get_comments_number() )
+  if (comments_open()) :
     comments_template();
+  endif;
 
   $comments = ob_get_contents();
   ob_end_clean();
@@ -243,6 +243,6 @@ function NullComments($args=array()) {
   if (array_key_exists('after', $args)) {
     $after = $args['after'];
   }
-  return $before.$comments.$after;
+  return $before . $comments . $after;
 }
 ?>

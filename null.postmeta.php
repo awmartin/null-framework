@@ -1,24 +1,44 @@
 <?php
 
-function get_null_posted_on() {
-  return sprintf( __( 'Posted on <a href="%1$s" title="%2$s" rel="bookmark"><time class="entry-date" datetime="%3$s">%4$s</time></a><span class="byline"> by <span class="author vcard"><a class="url fn n" href="%5$s" title="%6$s" rel="author">%7$s</a></span></span>', 'null' ),
-  esc_url( get_permalink() ),
-  esc_attr( get_the_time() ),
-  esc_attr( get_the_date( 'c' ) ),
-  esc_html( get_the_date() ),
-  esc_url( get_author_posts_url( get_the_author_meta( 'ID' ) ) ),
-  esc_attr( sprintf( __( 'View all posts by %s', 'null' ), get_the_author() ) ),
-  get_the_author()
-  );
+function getNullPostedOn($by='$middot;') {
+  $authorId = get_the_author_meta( 'ID' );
+  $authorUrl = esc_url(get_author_posts_url($authorId));
+  $datetime = esc_attr(get_the_date('c'));
+  $dateHtml = esc_html(get_the_date());
+  $link = esc_url( get_permalink() );
+  $author = get_the_author();
+
+  $posted =
+    NullTag('a',
+      NullTag('time', $dateHtml, array('datetime' => $datetime))
+      , array('href' => $link, 'rel' => 'bookmark'))
+    . ' ' . $by . ' '
+    . NullTag('span',
+        NullTag('a', $author, array('class' => 'url fn n', 'rel' => 'author', 'href' => $authorUrl))
+        , array('class' => 'author vcard'));
+  return $posted;
 }
 
 // Returns HTML that shows "Posted on YYYY-MM-DD by Author"
-function NullPostedOn() {
-  return NullTag(
-    'div',
-    get_null_posted_on(),
-    array('class' => 'post-meta')
-  );
+function NullPostedOn($options=array()) {
+  $before = '';
+  if (array_key_exists('before', $options)):
+    $before = $options['before'] . ' ';
+  endif;
+
+  $after = '';
+  if (array_key_exists('before', $options)):
+    $after = ' ' . $options['after'];
+  endif;
+
+  $by = '&middot;';
+  if (array_key_exists('by', $options)):
+    $by = ' ' . $options['by'];
+  endif;
+
+  return NullTag('div',
+    $before . getNullPostedOn($by) . $after,
+    array('class' => 'post-meta'));
 }
 
 function NullPostTags(){
@@ -73,7 +93,7 @@ function NullPostCategories($args=array()) {
       if ($html) {
         $cats[] = format_category($category, $args);
       } else {
-        $cats[] = $category->name;
+        $cats[] = esc_html($category->name);
       }
     }
   }
