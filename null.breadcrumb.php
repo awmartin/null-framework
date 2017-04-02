@@ -1,24 +1,48 @@
 <?php
-function NullBreadcrumb() {
-    $tr = '<ul class="breadcrumb">';
+function NullBreadcrumb($options=array()) {
+  $tr = '<div class="breadcrumb">';
 
-    if (is_post()) {
-        $tr = $tr.list_breadcrumb_categories();
-    } else if (is_page()) {
-        $tr = $tr.list_breadcrumb_hierarchy();
-    }
+  if (array_key_exists('before', $options)) :
+    $tr .= $options['before'];
+  endif;
 
-    $tr = $tr.crumb(home_link());
-    $tr = $tr.'</ul>';
+  $tr .= '<ul class="crumbs">';
 
-    return $tr;
+  if (array_key_exists('first', $options)) :
+    $tr .= '<li class="crumb">';
+    $tr .= $options['first'];
+    $tr .= '</li>';
+  endif;
+
+  if (is_single()) :
+    $tr .= list_breadcrumb_categories();
+  elseif (is_page()) :
+    $tr .= list_breadcrumb_hierarchy();
+  else:
+  endif;
+
+  $tr .= crumb(home_link());
+
+  if (array_key_exists('last', $options)) :
+    $tr .= '<li class="crumb">';
+    $tr .= $options['last'];
+    $tr .= '</li>';
+  endif;
+
+  $tr .= '</ul>';
+
+  if (array_key_exists('after', $options)) :
+    $tr .= $options['after'];
+  endif;
+
+  return $tr . '</div>';
 }
 
 // Manually create a breadcrumb.
 function NullBuildBreadcrumb() {
   $args = func_get_args();
 
-  $crumbs = '<ul class="breadcrumb">';
+  $crumbs = '<ul class="crumbs">';
   foreach ($args as $arg) {
       $crumbs = $crumbs.crumb($arg);
   }
@@ -27,7 +51,11 @@ function NullBuildBreadcrumb() {
 }
 
 function crumb($content) {
-    return NullTag("li", "&middot; ".$content);
+    return NullTag("li", $content, array('class' => 'crumb'));
+}
+
+function this_link() {
+  
 }
 
 function home_link() {

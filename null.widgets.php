@@ -18,4 +18,11 @@ function NullHorizontalWidgetArea($id) {
     array('class' => 'container')
   );
 }
+
+function NullMenu($name) {
+  return wp_nav_menu(array(
+    'theme_location' => $name,
+    'echo' => false,
+  ));
+}
 ?>

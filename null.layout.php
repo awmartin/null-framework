@@ -40,4 +40,17 @@ function NullMain($content, $options=array()) {
   return NullTag('main', NullContainer($content), $options);
 }
 
+function NullRow($content) {
+  return NullTag('div',
+    $content,
+    array('class' => 'row')
+  );
+}
+
+function NullColumn($width, $content) {
+  return NullTag('div',
+    $content,
+    array('class' => $width.' columns')
+  );
+}
 ?>

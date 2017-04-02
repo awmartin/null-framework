@@ -1,79 +1,116 @@
 <?php
 
-function NullArchiveTitle(){
+function NullArchiveType() {
+  if (is_category()) :
+    return 'category';
+  elseif (is_tag()) :
+    return 'tag';
+  elseif (is_author()) :
+    return 'author';
+  elseif (is_day()) :
+    return 'day';
+  elseif (is_month()) :
+    return 'month';
+  elseif (is_year()) :
+    return 'year';
+  else :
+    return 'default';
+  endif;
+}
 
+function NullArchiveTitle() {
+  return NullTag('h1', getArchiveTitle());
+}
+
+function getArchiveTitle() {
   if ( is_category() ) :
-    return sprintf( __( '%s', 'plinth' ), '<span>' . single_cat_title( '', false ) . '</span>' );
+    return sprintf( __( '%s', 'null' ), single_cat_title( '', false ) );
 
   elseif ( is_tag() ) :
-    return sprintf( __( '%s', 'plinth' ), '<span>' . single_tag_title( '', false ) . '</span>' );
+    return sprintf( __( '%s', 'null' ), single_tag_title( '', false ) );
 
   elseif ( is_author() ) :
-    /* Queue the first post, that way we know
-     * what author we're dealing with (if that is the case).
-    */
-    the_post();
-
-    return sprintf( __( 'Author Archives: %s', 'plinth' ), '<span class="vcard"><a class="url fn n" href="' . esc_url( get_author_posts_url( get_the_author_meta( "ID" ) ) ) . '" title="' . esc_attr( get_the_author() ) . '" rel="me">' . get_the_author() . '</a></span>' );
-
-    /* Since we called the_post() above, we need to
-     * rewind the loop back to the beginning that way
-     * we can run the loop properly, in full.
-     */
-    rewind_posts();
+    global $wp_query;
+    $author_obj = $wp_query->get_queried_object();
+    return $author_obj->first_name . ' ' . $author_obj->last_name;
 
   elseif ( is_day() ) :
-    return sprintf( __( 'Daily Archives: %s', 'plinth' ), '<span>' . get_the_date() . '</span>' );
+    return sprintf( __( 'Daily Archives: %s', 'null' ), get_the_date() );
 
   elseif ( is_month() ) :
-    return sprintf( __( 'Monthly Archives: %s', 'plinth' ), '<span>' . get_the_date( 'F Y' ) . '</span>' );
+    return sprintf( __( 'Monthly Archives: %s', 'null' ), get_the_date( 'F Y' ) );
 
   elseif ( is_year() ) :
-    return sprintf( __( 'Yearly Archives: %s', 'plinth' ), '<span>' . get_the_date( 'Y' ) . '</span>' );
+    return sprintf( __( 'Yearly Archives: %s', 'null' ), get_the_date( 'Y' ) );
 
   elseif ( is_tax( 'post_format', 'post-format-aside' ) ) :
-    return __( 'Asides', 'plinth' );
+    return __( 'Asides', 'null' );
 
 
   elseif ( is_tax( 'post_format', 'post-format-image' ) ) :
-    return __( 'Images', 'plinth');
+    return __( 'Images', 'null');
 
   elseif ( is_tax( 'post_format', 'post-format-video' ) ) :
-    return __( 'Videos', 'plinth' );
+    return __( 'Videos', 'null' );
 
   elseif ( is_tax( 'post_format', 'post-format-quote' ) ) :
-    return __( 'Quotes', 'plinth' );
+    return __( 'Quotes', 'null' );
 
   elseif ( is_tax( 'post_format', 'post-format-link' ) ) :
-    return __( 'Links', 'plinth' );
+    return __( 'Links', 'null' );
 
   else :
-    return __( 'Archives', 'plinth' );
+    return __( 'Archives', 'null' );
+
+  endif;
+}
+
+function NullArchiveDescription() {
+  if ( is_category() ) :
+    return NullCategoryDescription();
+
+  elseif ( is_tag() ) :
+    return NullTagDescription();
+
+  elseif ( is_author() ) :
+    return NullAuthorBio();
+
+  else:
+    return "";
 
   endif;
 }
 
 function NullCategoryDescription() {
   if ( is_category() ) :
-    // show an optional category description
     $category_description = category_description();
-    if ( ! empty( $category_description ) ) :
-      return apply_filters( 'category_archive_meta', '<div class="taxonomy-description">' . $category_description . '</div>' );
+    if ( !empty( $category_description ) ) :
+      return apply_filters( 'category_archive_meta', $category_description );
     endif;
-    return "";
   endif;
+  return "";
 }
 
 
 function NullTagDescription() {
   if ( is_tag() ) :
-    // show an optional tag description
     $tag_description = tag_description();
     if ( !empty( $tag_description ) ) :
-      return apply_filters( 'tag_archive_meta', '<div class="taxonomy-description">' . $tag_description . '</div>' );
+      return apply_filters( 'tag_archive_meta', $tag_description );
     endif;
-
-    return "";
   endif;
+  return "";
+}
+
+function NullAuthorFullName() {
+  global $wp_query;
+  $author_obj = $wp_query->get_queried_object();
+  return $author_obj->first_name . ' ' . $author_obj->last_name;
+}
+
+function NullAuthorBio() {
+  global $wp_query;
+  $author_obj = $wp_query->get_queried_object();
+  return $author_obj->description;
 }
 ?>

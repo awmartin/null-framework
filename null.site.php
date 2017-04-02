@@ -25,8 +25,28 @@ function NullSectionTitle($content) {
   return NullTag('h2', $content);
 }
 
+function NullTitleTag() {
+  $siteTitle = get_bloginfo('name');
+  if (is_home()) {
+    return $siteTitle;
+  }
+
+  $pageTitle = '';
+  if (is_single() || is_page()) {
+    $pageTitle = getPostTitle();
+  } elseif (is_archive()) {
+    $pageTitle = getArchiveTitle();
+  } elseif (is_search()) {
+    $pageTitle = 'Search';
+  } else {
+    return $siteTitle;
+  }
+
+  return $pageTitle . ' | ' . $siteTitle;
+}
+
 function NullSiteTitle($wrap=true) {
-    $siteTitle = get_bloginfo('name');
+    $siteTitle = getSiteTitle();
     $linkTitle = esc_attr( get_bloginfo( 'name', 'display' ) );
     $siteUrl = esc_url( home_url( '/' ) );
 
@@ -38,6 +58,10 @@ function NullSiteTitle($wrap=true) {
     $link = NullTag('a', $siteTitle, $linkAttr);
     if (!$wrap) return $link;
     return NullTag('h1', $link);
+}
+
+function getSiteTitle() {
+  return get_bloginfo('name');
 }
 
 function NullSiteDescription() {
@@ -90,5 +114,13 @@ function NullSiteCategories() {
 function NullBodyOpen() {
   $klass = NullBodyClass();
   return '<body class="'.$klass.'">';
+}
+
+// Force a 404 page. Can be used in the midst of any other page.
+function Null404() {
+  status_header( 404 );
+  nocache_headers();
+  include( get_query_template( '404' ) );
+  die();
 }
 ?>

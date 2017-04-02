@@ -11,7 +11,7 @@ function NullPostSidebar() {
 function NullPostContent($more=false) {
   $content = "";
   if ($more) {
-    $content = get_post_content( __( 'Continue reading <span class="meta-nav">&rarr;</span>', 'plinth' ) );
+    $content = get_post_content( __( 'Continue reading <span class="meta-nav">&rarr;</span>', 'null' ) );
   } else {
     $content = get_post_content();
   }
@@ -28,41 +28,11 @@ function get_post_content($more_link_text = null, $stripteaser = false){
 
 function NullPostPagination() {
   $attr = array(
-    'before' => '<div class="page-links row">' . __( 'Pages:', 'plinth' ),
+    'before' => '<div class="page-links row">' . __( 'Pages:', 'null' ),
     'after' => '</div>',
     'echo' => 0
     );
   return wp_link_pages($attr);
-}
-
-function NullEditPostLink() {
-  return return_edit_post_link(
-    __( 'Edit', 'plinth' ),
-    '<span class="edit-link">',
-    '</span>'
-  );
-}
-
-function return_edit_post_link( $link = null, $before = '', $after = '', $id = 0 ) {
-  if ( !$post = get_post( $id ) ) return;
-
-  if ( !$url = get_edit_post_link( $post->ID ) ) return;
-
-  if ( null === $link ) {
-    $link = __('Edit This');
-  }
-
-  $post_type_obj = get_post_type_object( $post->post_type );
-  $link = '<a class="post-edit-link" href="' . $url . '" title="' . esc_attr( $post_type_obj->labels->edit_item ) . '">' . $link . '</a>';
-  return $before . apply_filters( 'edit_post_link', $link, $post->ID ) . $after;
-}
-
-function is_post(){
-  return 'post' == get_post_type();
-}
-
-function sep(){
-  return NullTag('span', ' | ', array('class' => 'sep'));
 }
 
 function NullReadMoreLink() {
@@ -111,7 +81,7 @@ function NullPostContentWithoutExcerpt() {
 }
 
 function NullPostTitle($entry=false) {
-  $title = get_the_title();
+  $title = getPostTitle();
   $permalink = get_permalink();
 
   // Remove the title="" attribute.
@@ -130,9 +100,19 @@ function NullPostTitle($entry=false) {
   if ($entry) {
     $tag = "h3";
   }
-  $headerTitle = NullTag($tag, $linkToPost, array('class' => 'post-title'));
+  $headerTitle = NullTag($tag, $linkToPost);
 
   return $headerTitle;
+}
+
+// Return the text title for the current single or page.
+function getPostTitle() {
+  return get_the_title();
+  // if (is_single() || is_page() || is_singular()) :
+  //   return get_the_title();
+  // else :
+  //   return '';
+  // endif;
 }
 
 function hasThumbnail() {
@@ -143,15 +123,35 @@ function NullFeaturedImage($size='thumbnail') {
   if (hasThumbnail()) {
     return NullFlag('img', array(
       'src' => NullPostThumbnailUrl($size),
-      'class' => 'featured'
+      'class' => 'featured',
+      'alt' => NullPostThumbnailAlt()
     ));
   } else {
     return "";
   }
 }
 
+function NullPostThumbnailAlt() {
+  $thumbnailId = get_post_thumbnail_id($post->ID);
+  return wp_get_attachment($thumbnailId)['alt'];
+}
+
+// https://wordpress.org/ideas/topic/functions-to-get-an-attachments-caption-title-alt-description
+function wp_get_attachment( $attachment_id ) {
+  $attachment = get_post( $attachment_id );
+  return array(
+    'alt' => get_post_meta( $attachment->ID, '_wp_attachment_image_alt', true ),
+    'caption' => $attachment->post_excerpt,
+    'description' => $attachment->post_content,
+    // 'href' => get_permalink( $attachment->ID ),
+    'src' => $attachment->guid,
+    'title' => $attachment->post_title
+  );
+}
+
 function NullPostThumbnailUrl($size='thumbnail') {
-  $thumbnail = wp_get_attachment_image_src(get_post_thumbnail_id($post->ID, $size));
+  $thumbnailId = get_post_thumbnail_id($post->ID);
+  $thumbnail = wp_get_attachment_image_src($thumbnailId, $size, false);
 
   if (!$thumbnail[0]) {
     return false;
@@ -189,6 +189,15 @@ function NullPostFormat() {
   }
 }
 
+function NullPostFormatTemplate() {
+  $path = getThisThemeFolder() . '/single-' . NullPostFormat() . '.php';
+  if (file_exists($path)) :
+    include $path;
+  else:
+    Null404();
+  endif;
+}
+
 function NullIsPost() {
   return NullPostType() == 'post';
 }
@@ -209,5 +218,31 @@ function NullPostSlug() {
 
 function NullIsAbout() {
   return NullPostSlug() == 'about';
+}
+
+function NullPostLink($content, $options=array()) {
+  $options['href'] = get_permalink();
+  return NullTag('a', $content, $options);
+}
+
+function NullComments($args=array()) {
+  ob_start();
+
+  // If comments are open or we have at least one comment, load up the comment template
+  if ( comments_open() || '0' != get_comments_number() )
+    comments_template();
+
+  $comments = ob_get_contents();
+  ob_end_clean();
+
+  $before = '';
+  $after = '';
+  if (array_key_exists('before', $args)) {
+    $before = $args['before'];
+  }
+  if (array_key_exists('after', $args)) {
+    $after = $args['after'];
+  }
+  return $before.$comments.$after;
 }
 ?>
