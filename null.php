@@ -11,5 +11,6 @@ require( get_template_directory() . '/null/null.archive.php' );
 require( get_template_directory() . '/null/null.site.php' );
 require( get_template_directory() . '/null/null.search.php' );
 require( get_template_directory() . '/null/null.util.php' );
+require( get_template_directory() . '/null/null.parser.php' );
 
 ?>

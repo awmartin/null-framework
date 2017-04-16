@@ -39,7 +39,6 @@ function getAvailableContent($options=array()) {
   $categories = NullPostCategories();
   $excerpt = NullFirstParagraph();
 
-
   $featuredImage = '';
   $linkedFeaturedImage = '';
   if (hasThumbnail()) :
@@ -51,7 +50,6 @@ function getAvailableContent($options=array()) {
     $featuredImage = NullTag('div', $featured, array('class' => 'featured'));
     $linkedFeaturedImage = NullTag('div', NullPostLink($featuredImage), array('class' => 'featured'));
   endif;
-
 
   $availableContent = array(
     'title' => $postTitle,
@@ -65,7 +63,7 @@ function getAvailableContent($options=array()) {
     'excerpt' => $excerpt,
     'linkedexcerpt' => NullPostLink($excerpt),
     'format' => NullPostFormat(),
-    'categories+title' => '<div>'.$categories.$postTitle.'</div>'
+    'categories+title' => NullTag('div', $categories.$postTitle),
   );
 
   $availableContent['titleplus'] =
@@ -84,17 +82,12 @@ function EntryLayout($options=array()) {
 
   $availableContent = getAvailableContent($options);
 
-
   $numColumns = 1;
   if (array_key_exists('num_columns', $options)) :
     $numColumns = $options['num_columns'];
   endif;
 
-
-  // Retrieves the layout for the given format.
-  // 'format' => 'orientation-field1-field2-field3...''
   $format = $availableContent['format'];
-  $orientation = 'unspecified';
 
   $columnWidth = $availableColumnWidths[$numColumns];
   $columnWidthClass = $columnWidth." columns";
@@ -107,65 +100,26 @@ function EntryLayout($options=array()) {
   $layout = 'title'; // generic title to start
   if (array_key_exists($format, $options)) :
     $layout = $options[$format];
-  elseif (array_key_exists('standard', $options)) :
-    $layout = $options['standard'];
   endif;
-  $layoutParts = split('-', $layout);
 
-  $attr = array('class' => 'entry ' . $format);
+  // Parse the layout string and convert to HTML.
+  $content = Layout::parse($layout)->toHtml();
 
-  if ($format == 'standard') {
-    $orientation = $layoutParts[0];
-    $partWidth = $availableColumnWidths[count($layoutParts) - 2];
-
-    $content = '';
-    for ($i = 1, $len = count($layoutParts); $i < $len; $i++) {
-
-      // Don't remember what this was for...
-      // if (array_key_exists('entry-column-widths', $options)) {
-      //   $partWidth = $widths[$options['entry-column-widths'][$i - 2]];
-      // }
-
-      if ($orientation == 'horizontal') {
-        $content .= '<div class="'.$partWidth.' columns">';
-      }
-
-      // Get the piece of content out of the available pre-fetched content.
-      $itemKey = $layoutParts[$i];
-      if (array_key_exists($itemKey, $availableContent)) {
-        $item = $availableContent[$itemKey];
-        $content .= trim($item);
-      }
-
-      if ($orientation == 'horizontal') {
-        $content .= '</div>';
-      }
-    }
-
-  } else {
-
-    $content = '';
-    for ($i = 0, $len = count($layoutParts); $i < $len; $i++) {
-      $itemKey = $layoutParts[$i];
-      if (array_key_exists($itemKey, $availableContent)) {
-        $item = $availableContent[$itemKey];
-        $content .= trim($item);
-      }
-    }
-
-    $attr['data-excerpt'] = NullFirstParagraph(false);
+  // Take all the fields and convert them to known values.
+  foreach ($availableContent as $key => $value) {
+    $templateKey = "__" . strtoupper($key) . "__";
+    $content = str_replace($templateKey, $value, $content);
   }
 
-  if ($orientation == 'vertical' || $orientation == 'unspecified') {
-    // Apply the width of the entire entry here if we're using a vertical entry layout.
-    // Horizontal layouts tend to be arbitrarily wide.
-    $attr['class'] .= " ".$columnWidthClass;
-  }
+  // Prepare the HTML class for the resulting <article> element.
+  $attr = array(
+    'class'        => 'entry ' . $format . ' ' . $columnWidthClass,
+    'data-excerpt' => NullFirstParagraph(false),
+    );
 
   $schema = NullPostSchema();
   return NullTag('article', $content.$schema, $attr);
 } // End EntryLayout
-
 
 
 // Passing in a function as an argument.

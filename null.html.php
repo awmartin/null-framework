@@ -6,6 +6,13 @@ function NullLink($text, $url, $class="") {
 // Build a generic HTML tag with attributes. Setting an attribute value to null
 // places the key without an ="" afterwards.
 function NullTag($tag, $content="", $attr=array()) {
+  $start = NullTagOpen($tag, $attr);
+  $end = NullTagClose($tag);
+
+  return $start.$content.$end;
+}
+
+function NullTagOpen($tag, $attr=array()) {
   $quote = "\"";
   $equal = "=";
 
@@ -21,9 +28,12 @@ function NullTag($tag, $content="", $attr=array()) {
 
   $start .= ">";
 
-  $end = "</".$tag.">";
+  return $start;
+}
 
-  return $start.$content.$end;
+function NullTagClose($tag) {
+  $end = "</".$tag.">";
+  return $end;
 }
 
 function NullFlag($flag, $attr=array()) {
