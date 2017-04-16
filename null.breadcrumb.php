@@ -55,34 +55,36 @@ function crumb($content) {
 }
 
 function this_link() {
-  
+
 }
 
 function home_link() {
-    return NullLink("Home", get_site_url());
+  return NullLink("Home", get_site_url());
 }
 
 function list_breadcrumb_categories() {
-
-    $category_list = trim(get_the_category_list( ', ' ));
-    if ($category_list != "") {
-        return crumb($category_list);
-    } else {
-        return "";
-    }
+  $category_list = trim(get_the_category_list( ', ' ));
+  if ($category_list != "") {
+    return crumb($category_list);
+  } else {
+    return "";
+  }
 }
 
 function list_breadcrumb_hierarchy() {
-    $id = get_the_ID();
-    $parent_id = get_post_field('post_parent', $id);
+  $tr = "";
+  $id = get_the_ID();
+  $parent_id = get_post_field('post_parent', $id);
 
-    if ($parent_id > 0) {
-        $parent_title = get_the_title($parent_id);
-        $parent_url = get_permalink($parent_id);
+  while ($parent_id > 0) {
+    $parent_title = get_the_title($parent_id);
+    $parent_url = get_permalink($parent_id);
 
-        return crumb(NullLink($parent_title, $parent_url));
-    } else {
-        return '';
-    }
+    $tr .= crumb(NullLink($parent_title, $parent_url));
+
+    $parent_id = get_post_field('post_parent', $parent_id);
+  }
+
+  return $tr;
 }
 ?>
