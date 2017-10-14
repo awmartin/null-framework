@@ -69,6 +69,8 @@ function NullSiteDescription() {
 }
 
 function NullGoogleAnalytics($account) {
+    if ($account == '') { return ''; }
+
     $ga = '';
     $ga = $ga.'<script type="text/javascript">';
     $ga = $ga.'var _gaq = _gaq || [];';
