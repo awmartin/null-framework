@@ -1,6 +1,19 @@
 <?php
 
-function getNullPostedOn($by='$middot;') {
+function NullAuthor() {
+  $authorId = get_the_author_meta( 'ID' );
+  $authorUrl = esc_url(get_author_posts_url($authorId));
+  $author = get_the_author();
+  return NullTag('a', $author, array('class' => 'url fn n', 'rel' => 'author', 'href' => $authorUrl));
+}
+
+function NullPostedOn() {
+  $datetime = esc_attr(get_the_date('c'));
+  $dateHtml = esc_html(get_the_date());
+  return NullTag('time', $dateHtml, array('datetime' => $datetime, 'class' => 'post-meta'));
+}
+
+function getNullPostMeta($by='$middot;') {
   $authorId = get_the_author_meta( 'ID' );
   $authorUrl = esc_url(get_author_posts_url($authorId));
   $datetime = esc_attr(get_the_date('c'));
@@ -20,7 +33,7 @@ function getNullPostedOn($by='$middot;') {
 }
 
 // Returns HTML that shows "Posted on YYYY-MM-DD by Author"
-function NullPostedOn($options=array()) {
+function NullPostMeta($options=array()) {
   $before = '';
   if (array_key_exists('before', $options)):
     $before = $options['before'] . ' ';
@@ -37,7 +50,7 @@ function NullPostedOn($options=array()) {
   endif;
 
   return NullTag('div',
-    $before . getNullPostedOn($by) . $after,
+    $before . getNullPostMeta($by) . $after,
     array('class' => 'post-meta'));
 }
 
@@ -50,33 +63,38 @@ function format_category($category, $args) {
   if (array_key_exists('linked', $args)) {
     $linked = $args['linked'];
   }
-
-  if ($linked) {
-    return sprintf(
-      '<li><a href="%1$s">%2$s</a></li>',
-      esc_url( get_category_link( $category->term_id ) ),
-      esc_html( $category->name )
-    );
-  } else {
-    return sprintf(
-      '<li>%1$s</li>',
-      esc_html( $category->name )
-    );
+  $ul = true;
+  if (array_key_exists('ul', $args)) {
+    $ul = $args['ul'];
   }
+
+  $cat = esc_html($category->name);
+  if ($linked) {
+    $cat = NullLink($cat, esc_url( get_category_link( $category->term_id ) ));
+  }
+  if ($ul) {
+    $cat = NullTag('li', $cat);
+  }
+
+  return $cat;
 }
 
 function NullPostCategories($args=array()) {
-  $html = true;
+  $ul = true;
   $exclude_uncategorized = true;
   $linked = true;
+  $separator = ' ';
   if (array_key_exists('exclude_uncategorized', $args)) {
     $exclude_uncategorized = $args['exclude_uncategorized'];
   }
-  if (array_key_exists('html', $args)) {
-    $html = $args['html'];
+  if (array_key_exists('ul', $args)) {
+    $ul = $args['ul'];
   }
   if (array_key_exists('linked', $args)) {
     $linked = $args['linked'];
+  }
+  if (array_key_exists('separator', $args)) {
+    $separator = $args['separator'];
   }
 
   $categories = get_the_category();
@@ -84,24 +102,20 @@ function NullPostCategories($args=array()) {
 
   foreach ( $categories as $category ) {
     if ($exclude_uncategorized && $category->name == "Uncategorized") {
-      if ($html) {
+      if ($ul) {
         $cats[] = '<li>&nbsp;</li>';
       } else {
         $cats[] = ' ';
       }
     } else {
-      if ($html) {
-        $cats[] = format_category($category, $args);
-      } else {
-        $cats[] = esc_html($category->name);
-      }
+      $cats[] = format_category($category, $args);
     }
   }
 
-  if ($html) {
+  if ($ul) {
     return NullTag('ul', implode('', $cats), array('class' => 'post-categories'));
   } else {
-    return implode(' ', $cats);
+    return implode($separator, $cats);
   }
 }
 

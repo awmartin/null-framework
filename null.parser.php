@@ -58,11 +58,27 @@ class Slash extends Symbol {
   }
 }
 
+class Dot extends Symbol {
+  public function __construct() {
+    $this->char = '.';
+  }
+
+  public function toString() {
+    return "Dot";
+  }
+
+  public function toHtml() {
+    return '&nbsp;';
+  }
+}
+
 class Word {
   public $word = '';
 
   public function __construct($word='') {
-    $this->word = "__" . strtoupper($word) . "__";
+    if ($word != '') {
+      $this->word = "__" . strtoupper($word) . "__";
+    }
   }
 
   public function toString() {
@@ -140,7 +156,7 @@ class GroupVertical extends Group {
 
   public function toHtml() {
     foreach ($this->components as $component) {
-      $tr .= $component->toHtml();
+      $tr .= NullTag('div', $component->toHtml());
     }
     return $tr;
   }
@@ -170,6 +186,7 @@ class Layout {
     $parsed = Layout::parseGroups($parsedSymbols);
     $parsed = Layout::parseSymbolGroups(Slash, $parsed);
     $parsed = Layout::parseSymbolGroups(Pipe, $parsed);
+    // $parsed = Layout::parseOther(Dot, $parsed);
     return $parsed;
   }
 
@@ -182,7 +199,7 @@ class Layout {
     for( $i = 0; $i < $numChars; $i ++ ) {
       $char = substr( $str, $i, 1 );
 
-      if ($char == '(' || $char == ')' || $char == '|' || $char == '/') {
+      if ($char == '(' || $char == ')' || $char == '|' || $char == '/' || $char == '.') {
 
         if ( $isWord ) {
           // Register the word.
@@ -198,8 +215,10 @@ class Layout {
           array_push( $tr, new Close() );
         } else if ( $char == '|' ) {
           array_push( $tr, new Pipe() );
-        } else if ( $char == '/') {
+        } else if ( $char == '/' ) {
           array_push( $tr, new Slash() );
+        } else if ( $char == '.' ) {
+          array_push( $tr, new Dot() );
         }
 
       } else {

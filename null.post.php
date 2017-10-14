@@ -19,6 +19,8 @@ function NullPostContent($more=false) {
 }
 
 function getPostContent($more_link_text = null, $stripteaser = false){
+  global $more;
+  $more = 1;
   // Emulates the_content() without being stupid.
   $content = get_the_content($more_link_text, $stripteaser);
   $content = apply_filters('the_content', $content);
@@ -39,11 +41,12 @@ function NullReadMoreLink() {
   return NullLink('Read more...', get_permalink());
 }
 
-function NullExcerpt($attr=null) {
+function NullExcerpt() {
   global $more;
   $original_more = $more;
   $more = 0;
 
+  // I think this is supposed to respect the <!--more--> tag and provide excerpts with full HTML.
   $excerpt = get_the_content("");
   $excerpt = trim($excerpt);
   $excerpt = apply_filters('the_content', $excerpt);
@@ -51,6 +54,14 @@ function NullExcerpt($attr=null) {
   $more = $original_more;
 
   return $excerpt;
+}
+
+function NullMoreExcerpt() {
+  $excerpt = get_the_content("Read More …");
+  $excerpt = trim($excerpt);
+  $excerpt = apply_filters('the_content', $excerpt);
+  $excerpt = str_replace(']]>', ']]&gt;', $excerpt);
+  return NullTag('div', $excerpt, array('class' => 'excerpt'));
 }
 
 function NullFirstParagraph($asExcerpt=true) {
@@ -80,39 +91,22 @@ function NullPostContentWithoutExcerpt() {
   return $content;
 }
 
-function NullPostTitle($entry=false) {
+function NullPostTitle($tag='h1') {
   $title = getPostTitle();
   $permalink = get_permalink();
 
-  // Remove the title="" attribute.
-  // $linkTitleAttr = esc_attr(
-  //   sprintf( __( 'Permalink to %s', 'anomalus' ), the_title_attribute( 'echo=0' ))
-  // );
-
   $linkAttr = array(
-    // 'title' => $linkTitleAttr,
     'href' => $permalink,
     'rel' => 'bookmark'
   );
   $linkToPost = NullTag('a', $title, $linkAttr);
 
-  $tag = "h1";
-  if ($entry) {
-    $tag = "h3";
-  }
-  $headerTitle = NullTag($tag, $linkToPost);
-
-  return $headerTitle;
+  return NullTag($tag, $linkToPost);
 }
 
 // Return the text title for the current single or page.
 function getPostTitle() {
   return get_the_title();
-  // if (is_single() || is_page() || is_singular()) :
-  //   return get_the_title();
-  // else :
-  //   return '';
-  // endif;
 }
 
 function hasThumbnail() {

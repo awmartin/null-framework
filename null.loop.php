@@ -35,8 +35,8 @@ $widths = array(
 
 function getAvailableContent($options=array()) {
   // Some basics about the post.
-  $postTitle = NullPostTitle(true);
-  $categories = NullPostCategories();
+  $postTitle = NullPostTitle();
+  $categories = NullPostCategories(array('ul' => false));
   $excerpt = NullFirstParagraph();
 
   $featuredImage = '';
@@ -51,8 +51,16 @@ function getAvailableContent($options=array()) {
     $linkedFeaturedImage = NullTag('div', NullPostLink($featuredImage), array('class' => 'featured'));
   endif;
 
+  $wpexcerpt = get_the_excerpt();
+  $wpexcerpt = apply_filters('the_excerpt', $wpexcerpt);
+  $wpexcerpt = str_replace(']]>', ']]&gt;', $wpexcerpt);
+
+  // TODO Compute post available content on demand.
   $availableContent = array(
-    'title' => $postTitle,
+    'title' => NullPostTitle('h3'),
+    'titleh1' => NullPostTitle('h1'),
+    'titleh2' => NullPostTitle('h2'),
+    'titleh3' => NullPostTitle('h3'),
     'thumbnail' => NullPostThumbnail('thumbnail', true),
     'featured' => $featuredImage,
     'linkedfeatured' => $linkedFeaturedImage,
@@ -60,10 +68,18 @@ function getAvailableContent($options=array()) {
     'unlinkedcategories' => NullPostCategories(array('linked' => false)),
     'tags' => NullPostTags(),
     'postedon' => NullPostedOn(),
+    'date' => NullPostedOn(),
+    'postmeta' => NullPostMeta(),
     'excerpt' => $excerpt,
+    'wpexcerpt' => $wpexcerpt,
+    'moreexcerpt' => NullMoreExcerpt(),
     'linkedexcerpt' => NullPostLink($excerpt),
     'format' => NullPostFormat(),
-    'categories+title' => NullTag('div', $categories.$postTitle),
+    'content' => NullTag('div', NullPostContent(), array('class' => 'content')),
+    'nbsp' => '&nbsp;',
+    'br' => '<br>',
+    'ellipsis' => '…',
+    'dot' => '&middot;'
   );
 
   $availableContent['titleplus'] =
@@ -114,7 +130,7 @@ function EntryLayout($options=array()) {
   // Prepare the HTML class for the resulting <article> element.
   $attr = array(
     'class'        => 'entry ' . $format . ' ' . $columnWidthClass,
-    'data-excerpt' => NullFirstParagraph(false),
+    // 'data-excerpt' => NullFirstParagraph(false),
     );
 
   $schema = NullPostSchema();
