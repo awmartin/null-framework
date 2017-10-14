@@ -108,7 +108,7 @@ function EntryLayout($options=array()) {
   $columnWidth = $availableColumnWidths[$numColumns];
   $columnWidthClass = $columnWidth." columns";
 
-  if (is_sticky() && array_key_exists('stickies', $options)) {
+  if (is_sticky() && array_key_exists('stickies', $options) && $options['stickies']) {
     $columnWidthClass = "sticky twelve columns";
     $format = 'sticky';
   }
@@ -157,7 +157,7 @@ function NullLoop($options=array()) {
       $format = NullPostFormat();
 
       // Support for sticky posts.
-      if (is_sticky() && array_key_exists('stickies', $options)) {
+      if (is_sticky() && array_key_exists('stickies', $options) && $options['stickies']) {
         $stickyOptions = $options;
         $stickyOptions['featuredsize'] = 'large';
 
