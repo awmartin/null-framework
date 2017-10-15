@@ -13,7 +13,7 @@ function NullContentSidebar($content, $sidebar) {
     );
 }
 
-function NullSidebarContent($content, $sidebar) {
+function NullSidebarContent($sidebar, $content) {
   return NullRow(
     NullTag('aside', $sidebar, array('class' => 'four columns'))
     . NullTag('div', $content, array('class' => 'eight columns'))
