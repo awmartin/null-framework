@@ -113,13 +113,18 @@ function EntryLayout($options=array()) {
     $format = 'sticky';
   }
 
-  $layout = 'title'; // generic title to start
+  $layoutStr = 'title'; // generic title to start
   if (array_key_exists($format, $options)) :
-    $layout = $options[$format];
+    $layoutStr = $options[$format];
   endif;
 
+  $mode = 'entries';
+  if (array_key_exists('mode', $options)) {
+    $mode = $options['mode'];
+  }
   // Parse the layout string and convert to HTML.
-  $content = Layout::parse($layout)->toHtml();
+  $layoutEngine = new Layout($layoutStr, $mode);
+  $content = $layoutEngine->toHtml();
 
   // Take all the fields and convert them to known values.
   foreach ($availableContent as $key => $value) {
@@ -141,6 +146,11 @@ function EntryLayout($options=array()) {
 // Passing in a function as an argument.
 // http://stackoverflow.com/questions/627775/php-pass-function-as-param-then-call-the-function
 function NullLoop($options=array()) {
+  $mode = 'entries';
+  if (array_key_exists('mode', $options)) {
+    $mode = $options['mode'];
+  }
+
   ob_start();
 
   if (have_posts()):
@@ -174,14 +184,22 @@ function NullLoop($options=array()) {
 
       if ($currentPost % $numColumns == 0) {
         $closed = false;
-        echo StartRow();
+        if ($mode == 'table') {
+          echo NullTagOpen('tr');
+        } else {
+          echo StartRow();
+        }
       }
 
       echo EntryLayout($options);
 
       if (($currentPost + 1) % $numColumns == 0) {
         $closed = true;
-        echo EndRow();
+        if ($mode == 'table') {
+          echo NullTagClose('tr');
+        } else {
+          echo EndRow();
+        }
       }
 
       $currentPost++;
@@ -199,7 +217,11 @@ function NullLoop($options=array()) {
   $loopContent = ob_get_contents();
   ob_end_clean();
 
-  return $loopContent;
+  $loopclass = '';
+  if (array_key_exists('class', $options)) {
+    $loopclass = $options['class'];
+  }
+  return NullTag('div', $loopContent, array('class' => $loopclass));
 }
 
 function NullPagination() {

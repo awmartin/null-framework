@@ -4,10 +4,11 @@
  * 'format' => 'field1/field2'         / means lay out vertically
  * 'format' => 'field1|field2/field3'  | means lay out horizontally with .row and .n.columns
  * 'format' => 'field1+field2/field3'  + means put side-by-side with <span> tags
- * 'format' => '3.field1|9.field2'     n. means number of columns
+ * 'format' => '3field|9anotherfield'  numbers mean number of columns
  *
  * Usage:
- *   Layout::parse("title/image/excerpt")->toHtml();
+ *   $layout = Layout("title/image/excerpt");
+ *   $layout->toHtml();
  */
 
 class Symbol {
@@ -74,10 +75,23 @@ class Dot extends Symbol {
 
 class Word {
   public $word = '';
+  public $number = '';
 
   public function __construct($word='') {
+    $this->number = null;
+    $this->word = '';
+
     if ($word != '') {
-      $this->word = "__" . strtoupper($word) . "__";
+      // TODO Make Word parsing more formal. This is kinda hacky.
+      // Extract the field from the input.
+      $wordonly = preg_replace('/[0-9]*/', '', $word);
+      $this->word = "__" . strtoupper($wordonly) . "__";
+
+      // Extract a number from the input. This will be the number of columns.
+      $numberonly = preg_replace('/[a-zA-Z]*/', '', $word);
+      if ($numberonly != '') {
+        $this->number = (int)$numberonly;
+      }
     }
   }
 
@@ -86,14 +100,34 @@ class Word {
   }
 
   public function toHtml() {
-    return $this->word;
+    if ($this->number != null) {
+      $widths = array(
+        1 => 'one',
+        2 => 'two',
+        3 => 'three',
+        4 => 'four',
+        5 => 'five',
+        6 => 'six',
+        7 => 'seven',
+        8 => 'eight',
+        9 => 'nine',
+        10 => 'ten',
+        11 => 'eleven',
+        12 => 'twelve'
+      );
+      $columns = $widths[$this->number];
+      return NullTag('div', $this->word, array('class' => $columns . ' columns'));
+    } else {
+      return $this->word;
+    }
   }
 }
 
 class Group {
   public $components = array();
-  public function __construct($components=array()) {
+  public function __construct($components=array(), $mode='entries') {
     $this->components = $components;
+    $this->mode = $mode;
   }
 
   public function toString() {
@@ -135,7 +169,13 @@ class GroupHorizontal extends Group {
     $width = $availableColumnWidths[$numComponents];
 
     foreach ($this->components as $component) {
-      $tr .= NullColumn($width, $component->toHtml());
+      if ($this->mode == 'entries') {
+        $tr .= NullColumn($width, $component->toHtml());
+      } elseif ($this->mode == 'table') {
+        $tr .= NullTag('td', $component->toHtml());
+      } elseif ($this->mode == 'manual') {
+        $tr .= $component->toHtml();
+      }
     }
 
     return NullRow($tr);
@@ -166,31 +206,35 @@ class GroupVertical extends Group {
 class Layout {
   private $components = array();
 
-  public function __construct($components = array()) {
-    self::$components = $components;
+  public function __construct($layout, $mode="entries") {
+    $this->layout = $layout;
+    $this->mode = $mode;
   }
 
-  public static function parse($str) {
-    $str = trim(str_replace(' ', '', $str));
-    $parsedSymbols = Layout::parseSymbols($str);
-    $parsed = Layout::parseFromSymbols($parsedSymbols);
+  public function toHtml() {
+    return $this->parse()->toHtml();
+  }
+
+  public function parse() {
+    $str = trim(str_replace(' ', '', $this->layout));
+    $parsedSymbols = $this->parseSymbols($str);
+    $parsed = $this->parseFromSymbols($parsedSymbols);
 
     if (count($parsed) > 1) {
-      return new Group($parsed);
+      return new Group($parsed, $this->mode);
     } else {
       return $parsed[0];
     }
   }
 
-  public static function parseFromSymbols($parsedSymbols=array()) {
-    $parsed = Layout::parseGroups($parsedSymbols);
-    $parsed = Layout::parseSymbolGroups(Slash, $parsed);
-    $parsed = Layout::parseSymbolGroups(Pipe, $parsed);
-    // $parsed = Layout::parseOther(Dot, $parsed);
+  public function parseFromSymbols($parsedSymbols=array()) {
+    $parsed = $this->parseGroups($parsedSymbols);
+    $parsed = $this->parseSymbolGroups(Slash, $parsed);
+    $parsed = $this->parseSymbolGroups(Pipe, $parsed);
     return $parsed;
   }
 
-  public static function parseSymbols($str) {
+  public function parseSymbols($str) {
     $tr = array();
     $numChars = strlen($str);
     $wordStart = 0;
@@ -242,7 +286,7 @@ class Layout {
     return $tr;
   }
 
-  public static function parseGroups($toParse) {
+  public function parseGroups($toParse) {
     $tr = array();
 
     $inside = false;
@@ -265,7 +309,7 @@ class Layout {
         $depth --;
         if ($depth == 0) {
           // Done with this group.
-          $group = new Group( Layout::parseFromSymbols( $groupElts ) );
+          $group = new Group( $this->parseFromSymbols( $groupElts ) );
           // Skip this closing paren.
           $inside = false;
           $groupElts = array();
@@ -318,9 +362,9 @@ class Layout {
 
           $group == null;
           if ( $separator == Slash ) {
-            $group = new GroupVertical($groupElts);
+            $group = new GroupVertical($groupElts, $this->mode);
           } else {
-            $group = new GroupHorizontal($groupElts);
+            $group = new GroupHorizontal($groupElts, $this->mode);
           }
 
           array_push( $tr, $group );

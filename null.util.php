@@ -5,6 +5,12 @@ function getThisThemeFolder() {
   return get_template_directory();
 }
 
+/**
+  * $options
+  *   'categories' => array('whatever')
+  *   'tags' => array('whatever')
+  *   'format' => 'all', 'standard'
+*/
 function NullQuery($posts_per_page=10, $options=array()) {
     global $wp_query;
 
