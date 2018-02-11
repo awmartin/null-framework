@@ -106,9 +106,19 @@ function NullAuthorFullName() {
   return $author_obj->first_name . ' ' . $author_obj->last_name;
 }
 
-function NullAuthorBio() {
-  global $wp_query;
-  $author_obj = $wp_query->get_queried_object();
-  return $author_obj->description;
+function NullAuthorBio($id=null) {
+    if ($id != null) {
+        $user = get_user_by('login', $id);
+        if ($user) {
+            return $user->description;
+        }
+        return "hello";
+        // return $author_obj;
+        // return $author_obj->get('description');
+    } else {
+        global $wp_query;
+        $author_obj = $wp_query->get_queried_object();
+        return $author_obj->description;
+    }
 }
 ?>
