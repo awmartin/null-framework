@@ -58,9 +58,9 @@ function getAvailableContent($options=array()) {
   // TODO Compute post available content on demand.
   $availableContent = array(
     'title' => NullPostTitle('h3'),
-    'titleh1' => NullPostTitle('h1'),
-    'titleh2' => NullPostTitle('h2'),
-    'titleh3' => NullPostTitle('h3'),
+    'titleh' => NullPostTitle('h1'),
+    'titlehh' => NullPostTitle('h2'),
+    'titlehhh' => NullPostTitle('h3'),
     'thumbnail' => NullPostThumbnail('thumbnail', true),
     'featured' => $featuredImage,
     'linkedfeatured' => $linkedFeaturedImage,

@@ -115,7 +115,7 @@ function NullPostCategories($args=array()) {
   if ($ul) {
     return NullTag('ul', implode('', $cats), array('class' => 'post-categories'));
   } else {
-    return implode($separator, $cats);
+    return NullTag('span', implode($separator, $cats), array('class' => 'post-categories'));
   }
 }
 
