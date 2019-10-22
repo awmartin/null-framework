@@ -153,21 +153,28 @@ function NullLoop($options=array()) {
 
   ob_start();
 
-  if (have_posts()):
+  if ( have_posts() ):
     $currentPost = 0;
     $numColumns = 1;
+
     if (array_key_exists('num_columns', $options)) :
       $numColumns = $options['num_columns'];
     endif;
 
     $closed = false;
-    while (have_posts()):
+    while ( have_posts() ):
       the_post();
+
+      if ( get_post_status() == 'private' ) { continue; }
 
       $format = NullPostFormat();
 
       // Support for sticky posts.
-      if (is_sticky() && array_key_exists('stickies', $options) && $options['stickies']) {
+      $show_stickies = true;
+      if ( is_sticky() && array_key_exists('stickies', $options) && !$options['stickies'] ) {
+        $show_stickies = false;
+      }
+      if ( $show_stickies ) {
         $stickyOptions = $options;
         $stickyOptions['featuredsize'] = 'large';
 
@@ -180,6 +187,8 @@ function NullLoop($options=array()) {
 
         // But think of it as the first in the grid layout.
         $currentPost = 0;
+      } else if ( is_sticky() && !$show_stickies ) {
+        continue;
       }
 
       if ($currentPost % $numColumns == 0) {
