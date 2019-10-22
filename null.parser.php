@@ -229,8 +229,8 @@ class Layout {
 
   public function parseFromSymbols($parsedSymbols=array()) {
     $parsed = $this->parseGroups($parsedSymbols);
-    $parsed = $this->parseSymbolGroups(Slash, $parsed);
-    $parsed = $this->parseSymbolGroups(Pipe, $parsed);
+    $parsed = $this->parseSymbolGroups('Slash', $parsed);
+    $parsed = $this->parseSymbolGroups('Pipe', $parsed);
     return $parsed;
   }
 
@@ -297,15 +297,15 @@ class Layout {
     for( $i = 0; $i < $numElts; $i ++ ) {
       $elt = $toParse[$i];
 
-      if (is_a($elt, Open) && !$inside) {
+      if (is_a($elt, 'Open') && !$inside) {
         // Starting a group.
         $inside = true;
         $depth ++;
-      } else if (is_a($elt, Open)) {
+      } else if (is_a($elt, 'Open')) {
         // Group within a group. We don't really care. Parse it later.
         $depth ++;
         array_push($groupElts, $elt);
-      } else if (is_a($elt, Close) && $inside) {
+      } else if (is_a($elt, 'Close') && $inside) {
         $depth --;
         if ($depth == 0) {
           // Done with this group.
@@ -329,9 +329,9 @@ class Layout {
   // These are groups that are naturally grouped by an operator:
   // e/a|b|c/d => e,Group(a,b,c),c
   public function parseSymbolGroups($separator, $toParse=array()) {
-    $other = Slash;
-    if ( $separator == Slash ) {
-      $other = Pipe;
+    $other = 'Slash';
+    if ( $separator == 'Slash' ) {
+      $other = 'Pipe';
     }
 
     $tr = array();
@@ -353,7 +353,7 @@ class Layout {
 
       if ($inside) {
 
-        if ( ! is_a( $elt, Pipe ) && ! is_a( $elt, Slash ) ) {
+        if ( ! is_a( $elt, 'Pipe' ) && ! is_a( $elt, 'Slash' ) ) {
           array_push( $groupElts, $elt );
         }
 
@@ -361,7 +361,7 @@ class Layout {
           // End the group here.
 
           $group == null;
-          if ( $separator == Slash ) {
+          if ( $separator == 'Slash' ) {
             $group = new GroupVertical($groupElts, $this->mode);
           } else {
             $group = new GroupHorizontal($groupElts, $this->mode);
