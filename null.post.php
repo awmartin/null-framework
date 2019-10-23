@@ -10,22 +10,34 @@ function NullPostSidebar() {
 
 function NullPostContent($more=false) {
   $content = "";
+  $meta = null;
+
   if ($more) {
-    $content = getPostContent( __( 'Continue reading <span class="meta-nav">&rarr;</span>', 'null' ) );
+    list( $content, $meta ) = getPostContent( __( 'Continue reading <span class="meta-nav">&rarr;</span>', 'null' ) );
   } else {
-    $content = getPostContent();
+    list( $content, $meta ) = getPostContent();
   }
+
   return $content;
 }
 
-function getPostContent($more_link_text = null, $stripteaser = false){
+function getPostContent($more_link_text = null, $stripteaser = false) {
+  // Emulates the_content() without being stupid.
+  // Also returns any metadata at the end of a post delineated by ---.
+
   global $more;
   $more = 1;
-  // Emulates the_content() without being stupid.
+
   $content = get_the_content($more_link_text, $stripteaser);
-  $content = apply_filters('the_content', $content);
+
+  // Remove the metadata section.
+  $content_arr = explode( '---', $content );
+  $content_meta = $content_arr[1];
+
+  $content = apply_filters('the_content', $content_arr[0]);
   $content = str_replace(']]>', ']]&gt;', $content);
-  return $content;
+
+  return array ($content, $content_meta);
 }
 
 function NullPostPagination() {
@@ -188,7 +200,7 @@ function NullPostFormatTemplate() {
   if (file_exists($path)) :
     include $path;
   else:
-    Null404();
+    include getThisThemeFolder() . '/single-standard.php';
   endif;
 }
 
