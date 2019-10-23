@@ -174,7 +174,7 @@ function NullLoop($options=array()) {
       if ( is_sticky() && array_key_exists('stickies', $options) && !$options['stickies'] ) {
         $show_stickies = false;
       }
-      if ( $show_stickies ) {
+      if ( is_sticky() && $show_stickies ) {
         $stickyOptions = $options;
         $stickyOptions['featuredsize'] = 'large';
 
