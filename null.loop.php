@@ -62,6 +62,7 @@ function getAvailableContent($options=array()) {
     'titlehh' => NullPostTitle('h2'),
     'titlehhh' => NullPostTitle('h3'),
     'thumbnail' => NullPostThumbnail('thumbnail', true),
+    'medium' => NullPostThumbnail('medium', true),
     'featured' => $featuredImage,
     'linkedfeatured' => $linkedFeaturedImage,
     'categories' => $categories,
